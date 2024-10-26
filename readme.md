@@ -6,53 +6,68 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
 ## Ruta de desarrollo
 
-1. **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**:
+1.  **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**:
 
-   Este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
+    Este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
 
-   - ["cookie-parser"](https://www.npmjs.com/package/cookie-parser)
+    - ["cookie-parser"](https://www.npmjs.com/package/cookie-parser)
 
-     _middleware_ que nos permite acceder a las cookies enviadas por el cliente
+      _middleware_ que nos permite acceder a las cookies enviadas por el cliente
 
-   - ["debug"](https://www.npmjs.com/package/debug)
+    - ["debug"](https://www.npmjs.com/package/debug)
 
-     _funcion_ que nos permite controlar que _logs_ mostramos usando la variable de entorno _DEBUG_
+      _funcion_ que nos permite controlar que _logs_ mostramos usando la variable de entorno _DEBUG_
 
-   - ["ejs"](https://www.npmjs.com/package/ejs)
+    - ["ejs"](https://www.npmjs.com/package/ejs)
 
-     _view engine_ que nos permite insertar javascript en el _HTML_
+      _view engine_ que nos permite insertar javascript en el _HTML_
 
-   - ["express"](https://www.npmjs.com/package/express)
+    - ["express"](https://www.npmjs.com/package/express)
 
-     _framework_ que, entre otras cosas, nos facilita el manejo de _rutas_ y _middlewares_
+      _framework_ que, entre otras cosas, nos facilita el manejo de _rutas_ y _middlewares_
 
-   - ["http-errors"](https://www.npmjs.com/package/http-errors)
+    - ["http-errors"](https://www.npmjs.com/package/http-errors)
 
-     _funcion_ que nos facilita la creacion de _errores_
+      _funcion_ que nos facilita la creacion de _errores_
 
-   - ["morgan"](https://www.npmjs.com/package/morgan)
+    - ["morgan"](https://www.npmjs.com/package/morgan)
 
-     _middleware_ que nos muestra _logs_ de las _request_
+      _middleware_ que nos muestra _logs_ de las _request_
 
-   **Disclaimer** este _scaffolding_ tiene por defecto **vulnerabilities** que no han sido tratadas
+    **Actualizo** las dependencias para tratar las **vulnerabilities** que este _scaffolding_ tenia por defecto
 
-2. Edito el **Script** `"start"` para arrancar el servidor usando `node --watch` y creo _Scripts_ para arrancar el servidor en modo **dev** y modo **debug**:
+2.  Edito el **Script** `"start"` para arrancar el servidor usando `node --watch` y creo _Scripts_ para arrancar el servidor en modo **dev** y modo **debug**:
 
-   - `"dev": "cross-env PORT=4444 npm start"`
+    - `"dev": "cross-env PORT=4444 npm start"`
 
-   - `"debug": "cross-env PORT=5555 DEBUG=npx-express-generator-ejs:* npm start"`
+    - `"debug": "cross-env PORT=5555 DEBUG=npx-express-generator-ejs:* npm start"`
 
-   [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
+    [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
 
-3. [`npm i standard -D`](https://www.npmjs.com/package/standard) e incluyo la _propiedad_ `"eslintConfig": { "extends": "standard" }` en el _package.json_ para configurar **standard** como herramienta para:
+3.  [`npm i standard -D`](https://www.npmjs.com/package/standard) e incluyo la _propiedad_ `"eslintConfig": { "extends": "standard" }` en el _package.json_ para configurar [**standard**](https://standardjs.com/) como herramienta para:
 
-   - **linting**: conjunto de reglas que ayudan al control de errores mientras escribimos codigo
+    - **linting**: conjunto de reglas que ayudan al control de errores mientras escribimos codigo
 
-   - **formateo**: reglas especificas de como se ha de colocar el codigo, indentado, puntos y comas...
-   - Creo **script** `"lint": "standard"` para obtener en consola el resultado del lintado detallado
+    - **formateo**: reglas especificas de como se ha de colocar el codigo, indentado, puntos y comas...
+    - Creo **script** `"lint": "standard"` para obtener en consola el resultado del lintado detallado
 
-   Configuro el _VSCode_ para que cada vez que guardo automaticamente se apliquen los cambios provinientes de los _warnings_ de **standard**
+    Configuro el _VSCode_ para que cada vez que guardo automaticamente se apliquen los cambios provinientes de los _warnings_ de **standard**
 
-4. Migracion de CommonJS a ES
+4.  Migracion de **CommonJS Modules** a **ECMASCRIPT Modules**:
+
+    - Incluyo la propiedad `"type": "module"` en el _top level_ del **package.json**
+
+    - Cambio `__dirname` por `import.meta.dirname` en **app.js**
+    - Cambio todos los `require` y `module.exports` por `import from` y `export, export default`
+    - La sintaxis de usar la _libreria_ **debug** cambia:
+
+      - **Antes** una sola linea:
+
+             const debug = require('debug')('npx-express-generator-ejs:server')
+
+      - **Ahora** dos lineas:
+
+             import debugLib from 'debug'
+             const debug = debugLib('npx-express-generator-ejs:server')
 
 ## Paquetes NPM
