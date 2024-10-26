@@ -44,6 +44,8 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
    [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
 
-3. Migracion de CommonJS a ES
+3. LINTER STANDARD
+
+4. Migracion de CommonJS a ES
 
 ## Paquetes NPM
