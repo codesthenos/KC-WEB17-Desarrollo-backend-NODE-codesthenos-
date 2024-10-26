@@ -49,6 +49,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
    - **linting**: conjunto de reglas que ayudan al control de errores mientras escribimos codigo
 
    - **formateo**: reglas especificas de como se ha de colocar el codigo, indentado, puntos y comas...
+   - Creo **script** `"lint": "standard"` para obtener en consola el resultado del lintado detallado
 
    Configuro el _VSCode_ para que cada vez que guardo automaticamente se apliquen los cambios provinientes de los _warnings_ de **standard**
 
