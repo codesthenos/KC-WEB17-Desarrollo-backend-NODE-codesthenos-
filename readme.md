@@ -6,9 +6,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
 ## Ruta de desarrollo
 
-1.  **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**:
-
-    Este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
+1.  **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**, este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
 
     - ["cookie-parser"](https://www.npmjs.com/package/cookie-parser)
 
@@ -44,12 +42,13 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
     [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
 
-3.  [`npm i standard -D`](https://www.npmjs.com/package/standard) e incluyo la _propiedad_ `"eslintConfig": { "extends": "standard" }` en el _package.json_ para configurar [**standard**](https://standardjs.com/) como herramienta para:
+3.  Configuro [**standard**](https://standardjs.com/) incluyendo la _propiedad_ `"eslintConfig": { "extends": "standard" }` en el _package.json_ e instalando la dependencia usando [`npm i standard -D`](https://www.npmjs.com/package/standard), como herramienta para:
 
     - **linting**: conjunto de reglas que ayudan al control de errores mientras escribimos codigo
 
     - **formateo**: reglas especificas de como se ha de colocar el codigo, indentado, puntos y comas...
-    - Creo **script** `"lint": "standard"` para obtener en consola el resultado del lintado detallado
+
+    Creo **script** `"lint": "standard"` para obtener en consola el resultado del lintado detallado
 
     Configuro el _VSCode_ para que cada vez que guardo automaticamente se apliquen los cambios provinientes de los _warnings_ de **standard**
 
@@ -69,5 +68,12 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
              import debugLib from 'debug'
              const debug = debugLib('npx-express-generator-ejs:server')
+
+5.  Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose)...............:
+
+    - .........
+
+    - ........
+    - .....
 
 ## Paquetes NPM
