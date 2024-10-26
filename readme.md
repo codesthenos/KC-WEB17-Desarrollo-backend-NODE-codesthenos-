@@ -6,44 +6,44 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
 ## Ruta de desarrollo
 
-- **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**:
+1. **Scaffolding** del proyecto usando **`npx express-generator nodepop --ejs`**:
 
-  Este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
+   Este comando nos crea una estructura de carpetas y archivos inciales y el **`package.json`** con las dependencias:
 
-  - ["cookie-parser"](https://www.npmjs.com/package/cookie-parser)
+   - ["cookie-parser"](https://www.npmjs.com/package/cookie-parser)
 
-    _middleware_ que nos permite acceder a las cookies enviadas por el cliente
+     _middleware_ que nos permite acceder a las cookies enviadas por el cliente
 
-  - ["debug"](https://www.npmjs.com/package/debug)
+   - ["debug"](https://www.npmjs.com/package/debug)
 
-    _funcion_ que nos permite controlar que _logs_ mostramos usando la _variable de entorno_ **DEBUG**
+     _funcion_ que nos permite controlar que _logs_ mostramos usando la variable de entorno _DEBUG_
 
-  - ["ejs"](https://www.npmjs.com/package/ejs)
+   - ["ejs"](https://www.npmjs.com/package/ejs)
 
-    _view engine_ que nos permite insertar javascript en el _HTML_
+     _view engine_ que nos permite insertar javascript en el _HTML_
 
-  - ["express"](https://www.npmjs.com/package/express)
+   - ["express"](https://www.npmjs.com/package/express)
 
-    _framework_ que, entre otras cosas, nos facilita el manejo de _rutas_ y _middlewares_
+     _framework_ que, entre otras cosas, nos facilita el manejo de _rutas_ y _middlewares_
 
-  - ["http-errors"](https://www.npmjs.com/package/http-errors)
+   - ["http-errors"](https://www.npmjs.com/package/http-errors)
 
-    _funcion_ que nos facilita la creacion de _errores_
+     _funcion_ que nos facilita la creacion de _errores_
 
-  - ["morgan"](https://www.npmjs.com/package/morgan)
+   - ["morgan"](https://www.npmjs.com/package/morgan)
 
-    _middleware_ que nos muestra _logs_ de las _request_
+     _middleware_ que nos muestra _logs_ de las _request_
 
-- **Scripts**
+   **Disclaimer** este _scaffolding_ tiene por defecto **vulnerabilities** que no han sido tratadas
 
-- Instalamos **mongoose** usando **`npm install mongoose`**:
+2. Edito el **Script** `"start"` para arrancar el servidor usando `node --watch` y creo _Scripts_ para arrancar el servidor en modo **dev** y modo **debug**:
 
-  descripcion
+   - `"dev": "cross-env PORT=4444 npm start"`
 
-- Creamos **script** de iniciacion de la base de datos:
+   - `"debug": "cross-env PORT=5555 DEBUG=npx-express-generator-ejs:* npm start"`
 
-  descripcion
+   [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
 
-- ...
+3. Migracion de CommonJS a ES
 
 ## Paquetes NPM
