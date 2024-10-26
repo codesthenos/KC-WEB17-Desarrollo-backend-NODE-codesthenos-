@@ -44,7 +44,13 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
    [`npm i cross-env`](https://www.npmjs.com/package/cross-env) para que las variables de entorno se lean bien en todos los sistemas
 
-3. LINTER STANDARD
+3. [`npm i standard -D`](https://www.npmjs.com/package/standard) e incluyo la _propiedad_ `"eslintConfig": { "extends": "standard" }` en el _package.json_ para configurar **standard** como herramienta para:
+
+   - **linting**: conjunto de reglas que ayudan al control de errores mientras escribimos codigo
+
+   - **formateo**: reglas especificas de como se ha de colocar el codigo, indentado, puntos y comas...
+
+   Configuro el _VSCode_ para que cada vez que guardo automaticamente se apliquen los cambios provinientes de los _warnings_ de **standard**
 
 4. Migracion de CommonJS a ES
 
