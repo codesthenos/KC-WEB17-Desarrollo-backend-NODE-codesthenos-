@@ -81,4 +81,8 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
 8.  Creo **auth.routes.js** dentro de _routes_ donde voy a definir las rutas con **autenticacion**, tanto la de _registro_ como la de _login_
 
+9.  Uso el **router** the _auth.routes.js_ an **app.js** `app.use('/api', authRouter)`
+
+10. Defino las funciones de **registro** y **login** en la carpeta _controllers_
+
 ## Paquetes NPM
