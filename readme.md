@@ -83,6 +83,14 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
 9.  Uso el **router** the _auth.routes.js_ an **app.js** `app.use('/api', authRouter)`
 
-10. Defino las funciones de **registro** y **login** en la carpeta _controllers_
+10. Defino las funciones de **registro** y **login** en la carpeta _controllers_:
+
+    - Obtengo los datos del **req.body**
+
+    - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
+    - Creo nuevo _usuario_ con los datos del **req.body**
+    - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
+    - jwt para crear token
+    - guardar token en cookie
 
 ## Paquetes NPM
