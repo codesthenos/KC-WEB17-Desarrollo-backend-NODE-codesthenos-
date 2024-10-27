@@ -90,7 +90,8 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
     - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
     - Creo nuevo _usuario_ con los datos del **req.body**
     - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
-    - jwt para crear token
-    - guardar token en cookie
+    - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
+    - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
+    - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
 ## Paquetes NPM
