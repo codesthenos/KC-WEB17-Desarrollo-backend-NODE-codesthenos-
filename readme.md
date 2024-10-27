@@ -69,11 +69,14 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
              import debugLib from 'debug'
              const debug = debugLib('npx-express-generator-ejs:server')
 
-5.  Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose)...............:
+5.  Instalo en mi ordenador [MongoDB Community Server](https://www.mongodb.com/try/download/community-kubernetes-operator) y creo una conexion
 
-    - .........
+6.  Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose):
 
-    - ........
-    - .....
+    - Creo una _async funcion_ para conectar la **base de datos** usando `mongoose.connect('<URI>')`
+
+    - La importo en el archivo **www** y la uso justo antes del `server.listen(PORT)`
+
+7.  Creo modelo de datos de las **tareas**
 
 ## Paquetes NPM
