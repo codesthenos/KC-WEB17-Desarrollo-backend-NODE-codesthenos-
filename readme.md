@@ -77,6 +77,8 @@ La práctica consiste en _desarrollar_ un **website SSR** que preste un servicio
 
     - La importo en el archivo **www** y la uso justo antes del `server.listen(PORT)`
 
-7.  Creo modelo de datos de las **tareas**
+7.  Creo **userSchema** usando `mongoose.Schema({<properties and constraints>})` y exporto el modelo `mongoose.model('User', userSchema)`
+
+8.  Creo **auth.routes.js** dentro de _routes_ donde voy a definir las rutas con **autenticacion**, tanto la de _registro_ como la de _login_
 
 ## Paquetes NPM
