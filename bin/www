@@ -6,9 +6,8 @@
 
 import { createServer } from 'node:http'
 import app from '../app.js'
-import debugLib from 'debug'
-
-const debug = debugLib('npx-express-generator-ejs:server')
+import { debug } from '../lib/debug.js'
+import { connectDB } from '../lib/connectDB.js'
 
 /**
  * Get port from environment and store in Express.
@@ -22,6 +21,14 @@ app.set('port', port)
  */
 
 const server = createServer(app)
+
+// Connect the database just before listening the port
+try {
+  await connectDB()
+  console.log('CONNECTED TO DATABASE')
+} catch (error) {
+  debug('ERROR TRYING TO CONNECT THE DATABASE', error)
+}
 
 /**
  * Listen on provided port, on all network interfaces.
