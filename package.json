@@ -1,0 +1,27 @@
+{
+  "name": "codesthenos-nodepop",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --watch ./bin/www",
+    "debug": "cross-env PORT=5555 DEBUG=npx-express-generator-ejs:* npm start",
+    "dev": "cross-env PORT=4444 npm start",
+    "lint": "standard"
+  },
+  "dependencies": {
+    "cookie-parser": "1.4.7",
+    "cross-env": "7.0.3",
+    "debug": "4.3.7",
+    "ejs": "3.1.10",
+    "express": "4.21.1",
+    "http-errors": "2.0.0",
+    "morgan": "1.10.0"
+  },
+  "devDependencies": {
+    "standard": "17.1.2"
+  },
+  "eslintConfig": {
+    "extends": "standard"
+  }
+}
