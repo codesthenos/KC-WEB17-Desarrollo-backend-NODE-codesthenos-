@@ -4,8 +4,7 @@ import createError from 'http-errors'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 
-import indexRouter from './routes/index.js'
-import usersRouter from './routes/users.js'
+import homeController from './controllers/homeController.js'
 
 const app = express()
 
@@ -29,9 +28,7 @@ app.use(express.static(join(import.meta.dirname, 'public')))
 // Routing
 
 // homepage
-app.use('/', indexRouter)
-// user page
-app.use('/users', usersRouter)
+app.use('/', homeController)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -42,7 +39,7 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message
-  res.locals.error = req.app.get('env') === 'development' ? err : {}
+  res.locals.error = process.env.DEBUG ? err : {}
 
   // render the error page
   res.status(err.status || 500)
