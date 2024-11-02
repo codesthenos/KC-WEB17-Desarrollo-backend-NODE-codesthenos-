@@ -2,10 +2,23 @@
 <html>
   <head>
     <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
   <body>
     <h1><%= title %></h1>
     <p>Welcome to <%= title %></p>
+    <ul>
+      <% products.map((product, index) => { %>
+      <li>
+        <p>Product <%= index + 1 %></p>
+        <p>Name: <%= product.name %></p>
+        <p>Price: <%= product.price %> €</p>
+        <% product.tags.map((tag, index) => { %>
+        <p>Tag <%= index + 1 %>: <%= tag %></p>
+        <% }) %>
+        <a href="<%= product.image %>"><%= product.name %> image</a>
+      </li>
+      <% }) %>
+    </ul>
   </body>
 </html>

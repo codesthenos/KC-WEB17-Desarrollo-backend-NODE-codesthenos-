@@ -28,7 +28,7 @@ app.use(express.static(join(import.meta.dirname, 'public')))
 // Routing
 
 // homepage
-app.use('/', homeController)
+app.get('/', homeController)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -61,14 +61,14 @@ const resetProducts = async () => {
       {
         name: 'Clases',
         price: 40,
-        image: 'productsImages/clase-strength-gains.jpg',
+        image: '/productsImages/clase-strength-gains.jpg',
         tags: ['work', 'lifestyle'],
         owner: ataraxia._id
       },
       {
         name: 'Camiseta',
         price: 12,
-        image: 'productsImages/camiseta-strength-gains.jpg',
+        image: '/productsImages/camiseta-strength-gains.jpg',
         tags: ['work'],
         owner: ataraxia._id
       },

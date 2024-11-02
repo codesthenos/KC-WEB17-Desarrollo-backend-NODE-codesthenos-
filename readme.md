@@ -160,7 +160,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Creo script que resetea la base de datos a unos valores iniciales
 
-- ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home
+- ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home. Creo version basica de home que muestra todos los productos en una lista con enlaces <a> a sus imagenes
 
 - ### Hacer register, login y logout
 
