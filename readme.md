@@ -154,9 +154,9 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Creo base de datos en local
 
-- ### Conecto la app con la base de datos instalo mongoose
+- ### Conecto la app con la base de datos instalo mongoose funcion conexion
 
-- ### Creo los modelos User y Product
+- ### Creo los modelos User con el metodo de schema y el metodo de instancia y el modelo Product linkeado a User
 
 - ### Creo script que resetea la base de datos a unos valores iniciales
 
