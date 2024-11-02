@@ -61,35 +61,35 @@ const resetProducts = async () => {
       {
         name: 'Clases',
         price: 40,
-        image: 'SERVE AS STATIC',
+        image: 'productsImages/clase-strength-gains.jpg',
         tags: ['work', 'lifestyle'],
         owner: ataraxia._id
       },
       {
         name: 'Camiseta',
         price: 12,
-        image: 'SERVE AS STATIC',
+        image: 'productsImages/camiseta-strength-gains.jpg',
         tags: ['work'],
         owner: ataraxia._id
       },
       {
         name: 'Esterilla',
         price: 20,
-        image: 'SERVE AS STATIC',
+        image: '/productsImages/esterilla-fitness.jpg',
         tags: ['work'],
         owner: ataraxia._id
       },
       {
         name: 'Honda cbr',
         price: 9000,
-        image: 'SERVE AS STATIC',
+        image: '/productsImages/Honda-CBR650R-2023-1200x899.jpg',
         tags: ['motor'],
         owner: codesthenos._id
       },
       {
         name: 'Xiaomi 12',
         price: 130,
-        image: 'SERVE AS STATIC',
+        image: '/productsImages/xiaomi-12.png',
         tags: ['mobile'],
         owner: codesthenos._id
       }
