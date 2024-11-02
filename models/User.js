@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose'
+import bcrypt from 'bcrypt'
 
 // Users Mongo Collection's Schema created with mongoose
 const userSchema = new Schema({
@@ -7,7 +8,9 @@ const userSchema = new Schema({
 }, { timestamps: true })
 
 // Schema static method to hash the pasword
-// Instance method to compare given rawPassword with instance.password
+userSchema.statics.hashPassword = rawPassword => bcrypt.hash(rawPassword, 10)
 
+// Instance method to compare given rawPassword with instance.password
+userSchema.methods.comparePassword = rawPassword => bcrypt.compare(rawPassword, this.password)
 // Mongo Collection 'Users'
 export const User = model('User', userSchema)

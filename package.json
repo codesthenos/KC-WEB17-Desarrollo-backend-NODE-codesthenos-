@@ -7,9 +7,11 @@
     "start": "node --watch ./bin/www",
     "debug": "cross-env PORT=5555 DEBUG=npx-express-generator-ejs:* npm start",
     "dev": "cross-env PORT=4444 npm start",
+    "resetDB": "node resetDB",
     "lint": "standard"
   },
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cookie-parser": "1.4.7",
     "cross-env": "7.0.3",
     "debug": "4.3.7",
