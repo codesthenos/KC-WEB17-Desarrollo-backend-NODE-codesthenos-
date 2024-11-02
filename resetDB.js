@@ -1,6 +1,7 @@
 import readline from 'node:readline'
 import { connectDB } from './lib/connectDB.js'
 import { User } from './models/User.js'
+import { Product } from './models/Product.js'
 
 // function to ask the user if he is SURE about RESSETING teh database, and returns the answer
 const ask = questionText => {
@@ -42,6 +43,63 @@ const resetUsers = async () => {
   }
 }
 
+// function to reset the Products
+const resetProducts = async () => {
+  try {
+    // delete all Products in the MONGODB and store them in 'deletedProducts'
+    const deletedProducts = await Product.deleteMany()
+    console.log(`Deleted ${deletedProducts.deletedCount} products`)
+
+    // store the Users needed to create the Products (Product owners)
+    const [codesthenos, ataraxia] = await Promise.all([
+      User.findOne({ email: 'codesthenos@code.com' }),
+      User.findOne({ email: 'ataraxia@code.com' })
+    ])
+
+    // insert DEFAULT Products and store them in 'defaultProducts'
+    const defaultProducts = await Product.insertMany([
+      {
+        name: 'Clases',
+        price: 40,
+        image: 'SERVE AS STATIC',
+        tags: ['work', 'lifestyle'],
+        owner: ataraxia._id
+      },
+      {
+        name: 'Camiseta',
+        price: 12,
+        image: 'SERVE AS STATIC',
+        tags: ['work'],
+        owner: ataraxia._id
+      },
+      {
+        name: 'Esterilla',
+        price: 20,
+        image: 'SERVE AS STATIC',
+        tags: ['work'],
+        owner: ataraxia._id
+      },
+      {
+        name: 'Honda cbr',
+        price: 9000,
+        image: 'SERVE AS STATIC',
+        tags: ['motor'],
+        owner: codesthenos._id
+      },
+      {
+        name: 'Xiaomi 12',
+        price: 130,
+        image: 'SERVE AS STATIC',
+        tags: ['mobile'],
+        owner: codesthenos._id
+      }
+    ])
+    console.log(`Inserted ${defaultProducts.length} products`)
+  } catch (error) {
+    console.error('ERROR RESETTING PRODUCTS', error)
+  }
+}
+
 // Connect to MONGO database
 try {
   const connection = await connectDB()
@@ -64,7 +122,16 @@ try {
 // Reset Users
 try {
   await resetUsers()
-  process.exit()
 } catch (error) {
   console.error('ERROR resetting Users', error)
 }
+
+// Reset Prodcuts
+try {
+  await resetProducts()
+} catch (error) {
+  console.error('ERROR resetting Products', error)
+}
+
+// end process
+process.exit()
