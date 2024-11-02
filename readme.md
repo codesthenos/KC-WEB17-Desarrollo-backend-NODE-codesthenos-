@@ -24,23 +24,25 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 3. [Ruta de desarrollo](#ruta-de-desarrollo)
 
-   3.1 [Inicio del proyecto](#comienzo-el-proyecto-cargando-el-scaffolding-final)
+   3.01 [Inicio del proyecto](#comienzo-el-proyecto-cargando-el-scaffolding-final)
 
-   3.2 [Base de datos](#creo-base-de-datos-en-local)
+   3.02 [Base de datos](#creo-base-de-datos-mongodb-en-local)
 
-   3.3 [Modelos](#creo-los-modelos-user-y-product)
+   3.03 [Conecto base de datos](#conecto-la-app-con-la-base-de-datos)
 
-   3.4 [Script base de datos](#creo-script-que-resetea-la-base-de-datos-a-unos-valores-iniciales)
+   3.04 [Modelos](#creo-los-modelos-user-y-product)
 
-   3.5 [Version basica](#hacer-primera-version-basica-ej-get-que-devuelva-todos-los-productos-sin-filtros)
+   3.05 [Script base de datos](#creo-script-que-resetea-la-base-de-datos-a-unos-valores-iniciales)
 
-   3.6 [Login](#hacer-register-login-y-logout)
+   3.06 [Version basica](#hacer-primera-version-basica-ej-get-que-devuelva-todos-los-productos-sin-filtros)
 
-   3.7 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
+   3.07 [Login](#hacer-register-login-y-logout)
 
-   3.8 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
+   3.08 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
 
-   3.9 [Ejemplo llamada](#ejemplo-de-llamada-final)
+   3.09 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
+
+   3.10 [Ejemplo llamada](#ejemplo-de-llamada-final)
 
 ## Scaffolding creado por defecto con [`npx express-generator . --view=ejs`](https://github.com/expressjs/generator)
 
@@ -152,9 +154,28 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Comienzo el proyecto cargando el [scaffolding final](#scaffolding-final)
 
-- ### Creo base de datos en local
+  1. Clono el [repo](https://github.com/codesthenos/express-generator-standard-template) en la carpeta **PRACTICA**
 
-- ### Conecto la app con la base de datos instalo mongoose funcion conexion
+  2. Cambio el `"name"` en el **package.json** y en el **package-lock.json**
+  3. Hago `npm i` para instalar las dependencias
+
+- ### Creo base de datos MongoDB en local
+
+  1. Descargo en instalo [MongoDB Community Server](https://www.mongodb.com/try/download/community-kubernetes-operator) y creo una conexion
+
+  2. Instalo la extension [MongoDB for VS Code](https://marketplace.visualstudio.com/items?itemName=mongodb.mongodb-vscode) en _Visual Studio Code_ para ir comprobando los cambios en la **base de datos**
+
+  3. Instalo la extension [Thunder Client](https://marketplace.visualstudio.com/items?itemName=rangav.vscode-thunder-client) para hacer peticiones **post** y **put** comodamente
+
+- ### Conecto la app con la base de datos
+
+  1. Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose)
+
+  2. Creo la funcion `connectDB` usando la funcion `mongoose.connect(MONGODB_URI)` para conectar la **app** a la **base de datos**
+
+  3. Llamo a la funcion `connectDB` en el archivo `www` justo antes del `server.listen(port)`
+
+  4. Creo un **log** y manejo de **errores** para comprobar si la _conexion_ ha sido satisfactoria
 
 - ### Creo los modelos User con el metodo de schema y el metodo de instancia y el modelo Product linkeado a User
 
@@ -162,33 +183,24 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home. Creo version basica de home que muestra todos los productos en una lista con enlaces <a> a sus imagenes
 
-- ### Hacer register, login y logout
+- ### Hacer login y logout. OPCIONAL register TODO
 
-- ### Creacion y borrado de productos OPCIONAL update de producto
+- ### Hacer sistema de sesiones para tener rutas autenticadas TODO
 
-- ### OPCTIONAL incluir filtros, paginacion update etc
+- ### Creacion y borrado de productos OPCIONAL update de producto TODO
 
-- ### ejemplo de llamada final:
+- ### OPCTIONAL incluir filtros, paginacion update etc TODO
+
+- ### ejemplo de llamada final: TODO
   GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
 
 ---
 
 ## REVISAR TODO
 
-2. Instalo en mi ordenador [MongoDB Community Server](https://www.mongodb.com/try/download/community-kubernetes-operator) y creo una conexion
-3. Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose):
-
-   - Creo una _async funcion_ para conectar la **base de datos** usando `mongoose.connect('<URI>')`
-
-   - La importo en el archivo **www** y la uso justo antes del `server.listen(PORT)`
-
 4. Creo **userSchema** usando `mongoose.Schema({<properties and constraints>})` y exporto el modelo `mongoose.model('User', userSchema)`
 
-5. Creo **auth.routes.js** dentro de _routes_ donde voy a definir las rutas con **autenticacion**, tanto la de _registro_ como la de _login_
-
-6. Uso el **router** the _auth.routes.js_ an **app.js** `app.use('/api', authRouter)`
-
-7. Defino las funciones de **registro** y **login** en la carpeta _controllers_:
+5. Defino las funciones **login**, **logout** y **registro** en la carpeta _controllers_:
 
    **Registro**:
 
@@ -207,22 +219,13 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
    - Obtengo los datos del **req.body**
 
    - Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-   - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-   - Creo nuevo _usuario_ con los datos del **req.body**
-   - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
+   - Comparo la _password_ enviarda con la de la **base de datos** usando la funcion _bcrypt.compare()_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
    - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
    - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
    - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
    **LogOut**:
 
-   - Obtengo los datos del **req.body**
-
-   - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-   - Creo nuevo _usuario_ con los datos del **req.body**
-   - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
-   - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-   - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-   - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
+   - Limpiamos el la cookie **token** usando `res.clearCookie('token')`
 
 ## Paquetes NPM
