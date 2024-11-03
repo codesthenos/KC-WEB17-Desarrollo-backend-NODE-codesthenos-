@@ -40,7 +40,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.08 [Login y logout](#implementacion-del-login-y-logout)
 
-   3.09 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
+   3.09 [CRUD Productos](#creacion-y-borrado-de-productos-opcional-update-de-producto-todo)
 
    3.10 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
 
@@ -328,29 +328,41 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   5. En **header.ejs** el `href` del link que hay de forma condicional no lleva a _'/logout', '/login' o '/'_ dependiendo si estoy renderizando **home.ejs** o **login.ejs** y si hay o no _usuario logueado_
 
-- ### ISLOGGED USAGE
-
 - ### Creacion y borrado de productos OPCIONAL update de producto TODO
 
-- ### OPCTIONAL incluir filtros, paginacion update etc TODO
+  1. creo los middlewares de los endpoints en productsController.js
 
-- ### ejemplo de llamada final: TODO
-  GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
+     1. Creo funcion GET products
+
+     2. funcion POST product
+
+     3. DELETE prodyct
+
+  2. Creo endpoints en app.js, usando isLogged y los middlewares creados
+
+  3. Creo vista para crear producto
+
+  4. Creo boton para eliminar producto
 
 ---
 
-## REVISAR TODO
+## OPTIONAL TODO
 
-**Registro**:
+- ### REGISTRO
 
-- Obtengo los datos del **req.body**
+  - Obtengo los datos del **req.body**
 
-- Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-- Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-- Creo nuevo _usuario_ con los datos del **req.body**
-- utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
-- Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-- Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-- Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
+  - Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
+  - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
+  - Creo nuevo _usuario_ con los datos del **req.body**
+  - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
+  - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
+  - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
+  - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
+
+  - ### OPCTIONAL incluir filtros, paginacion update etc TODO
+
+  - ### ejemplo de llamada final: TODO
+    GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
 
 ## Paquetes NPM
