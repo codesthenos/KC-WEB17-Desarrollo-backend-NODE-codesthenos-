@@ -32,7 +32,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.04 [Modelos](#creo-los-modelos-user-y-product)
 
-   3.05 [Script base de datos](#creo-script-que-resetea-la-base-de-datos-a-unos-valores-iniciales)
+   3.05 [Script `resetDB`](#creo-script-que-resetea-la-base-de-datos-a-unos-valores-iniciales)
 
    3.06 [Version basica](#hacer-primera-version-basica-ej-get-que-devuelva-todos-los-productos-sin-filtros)
 
@@ -142,13 +142,14 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
   - La sintaxis de usar la _libreria_ **debug** cambia:
 
     - **Antes** una sola linea:
-
-           const debug = require('debug')('npx-express-generator-ejs:server')
-
+      ```js
+      const debug = require('debug')('npx-express-generator-ejs:server')
+      ```
     - **Ahora** dos lineas:
-
-           import debugLib from 'debug'
-           const debug = debugLib('npx-express-generator-ejs:server')
+      ```js
+      import debugLib from 'debug'
+      const debug = debugLib('npx-express-generator-ejs:server')
+      ```
 
 ## Ruta de desarrollo
 
@@ -171,17 +172,71 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   1. Instalo [**mongoose**](https://mongoosejs.com/) usando [`npm i mongoose`](https://www.npmjs.com/package/mongoose)
 
-  2. Creo la funcion `connectDB` usando la funcion `mongoose.connect(MONGODB_URI)` para conectar la **app** a la **base de datos**
+  2. Creo la funcion `connectDB` usando la funcion [mongoose.connect(MONGODB_URI)](https://mongoosejs.com/docs/connections.html) para conectar la **app** a la **base de datos**
 
   3. Llamo a la funcion `connectDB` en el archivo `www` justo antes del `server.listen(port)`
 
   4. Creo un **log** y manejo de **errores** para comprobar si la _conexion_ ha sido satisfactoria
 
-- ### Creo los modelos User con el metodo de schema y el metodo de instancia y el modelo Product linkeado a User
+- ### Creo los modelos User y Product
+
+  1. Creo **userSchema** y **productSchema** usando la funcion [Schema](https://mongoosejs.com/docs/guide.html) de [mongoose](https://mongoosejs.com/)
+     ```js
+     const <nameSchema> = new Schema({<properties and constraints>})
+     ```
+  2. Exporto modelos **User** y **Product** usando la funcion [model](https://mongoosejs.com/docs/models.html) de [mongoose](https://mongoosejs.com/)
+
+     ```js
+     const <modelName> = model(<collectionName>, <nameSchema>)
+     ```
+
+  3. Instalo [bcrypt](https://github.com/kelektiv/node.bcrypt.js) usando [`npm i bcrypt`](https://www.npmjs.com/package/bcrypt) para crear en el _modelo_ **User** un _metodo de Schema_ para **encriptar** la **password** y un _metodo de Instancia_ para **comparar passwords**
+
+     ```js
+     userSchema.statics.hashPassword = (rawPassword) =>
+       bcrypt.hash(rawPassword, 10)
+
+     userSchema.methods.comparePassword = (rawPassword) =>
+       bcrypt.compare(rawPassword, this.password)
+     ```
+
+  4. En el _modelo_ **Product** la _propiedad_ **owner** es una _referencia_ al _modelo_ **User**
+     ```js
+     owner: { type: Schema.Types.ObjectId, ref: 'User' }
+     ```
 
 - ### Creo script que resetea la base de datos a unos valores iniciales
 
-- ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home. Creo version basica de home que muestra todos los productos en una lista con enlaces <a> a sus imagenes
+  1. Importo [createInterface](https://nodejs.org/api/readline.html#readlinecreateinterfaceoptions) desde ['node:readline'](https://nodejs.org/api/readline.html) para poder interactuar por consola
+
+     ```js
+     import { createInterface } from 'node:readline'
+     ```
+
+  2. Creo funcion **ask** para antes de _resetear_ la base de datos a los valores por **defecto** preguntar si estamos seguros
+
+  3. Creo las funciones para **borrar** todos los registros e **insertar** los registros por _defecto_ tanto en **User** como en **Product**
+
+  4. Creo conexion a la base de dato **MongoDB**
+
+  5. Pregunto usando **ask** si estamos seguros del reseteo
+
+     ```js
+     if (answer !== 'yes') {
+       console.log('RESET ABORTED')
+       process.exit()
+     }
+     ```
+
+  6. Reseteo primero **User** ya que el campo **owner** de **Product** es una _referencia_ a **User**
+
+  7. Reseteo **Product** y termino el proceso con `process.exit()`
+
+  8. Creo **script** en el **package.json** para _ejecutar_ el archivo **resetDB.js**
+
+     `"resetDB": "node resetDB"`
+
+- ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home. Creo version basica de home que muestra todos los productos en una lista con enlaces a a sus imagenes
 
 - ### Hacer login y logout. OPCIONAL register TODO
 
@@ -198,34 +253,30 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ## REVISAR TODO
 
-4. Creo **userSchema** usando `mongoose.Schema({<properties and constraints>})` y exporto el modelo `mongoose.model('User', userSchema)`
+**LogIn**:
 
-5. Defino las funciones **login**, **logout** y **registro** en la carpeta _controllers_:
+- Obtengo los datos del **req.body**
 
-   **Registro**:
+- Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
+- Comparo la _password_ enviarda con la de la **base de datos** usando la funcion _bcrypt.compare()_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
+- Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
+- Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
+- Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
-   - Obtengo los datos del **req.body**
+**LogOut**:
 
-   - Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-   - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-   - Creo nuevo _usuario_ con los datos del **req.body**
-   - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
-   - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-   - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-   - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
+- Limpiamos el la cookie **token** usando `res.clearCookie('token')`
 
-   **LogIn**:
+**Registro**:
 
-   - Obtengo los datos del **req.body**
+- Obtengo los datos del **req.body**
 
-   - Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-   - Comparo la _password_ enviarda con la de la **base de datos** usando la funcion _bcrypt.compare()_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-   - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-   - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-   - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
-
-   **LogOut**:
-
-   - Limpiamos el la cookie **token** usando `res.clearCookie('token')`
+- Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
+- Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
+- Creo nuevo _usuario_ con los datos del **req.body**
+- utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
+- Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
+- Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
+- Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
 ## Paquetes NPM

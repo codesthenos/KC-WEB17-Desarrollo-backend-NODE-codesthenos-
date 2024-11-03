@@ -1,4 +1,4 @@
-import readline from 'node:readline'
+import { createInterface } from 'node:readline'
 import { connectDB } from './lib/connectDB.js'
 import { User } from './models/User.js'
 import { Product } from './models/Product.js'
@@ -6,7 +6,7 @@ import { Product } from './models/Product.js'
 // function to ask the user if he is SURE about RESSETING teh database, and returns the answer
 const ask = questionText => {
   return new Promise((resolve, reject) => {
-    const consoleInterface = readline.createInterface({
+    const consoleInterface = createInterface({
       input: process.stdin,
       output: process.stdout
     })
