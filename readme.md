@@ -34,7 +34,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.05 [Script `resetDB`](#creo-script-que-resetea-la-base-de-datos-a-unos-valores-iniciales)
 
-   3.06 [Version basica](#hacer-primera-version-basica-ej-get-que-devuelva-todos-los-productos-sin-filtros)
+   3.06 [App basica](#primera-version-basica-de-la-app)
 
    3.07 [Login](#hacer-register-login-y-logout)
 
@@ -236,7 +236,17 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
      `"resetDB": "node resetDB"`
 
-- ### Hacer primera version basica, ej, GET que devuelva todos los productos sin filtros cambio la carpeta rutas por la carpeta controllers, y en vez de usar el router de express, creo un middleware en el que declaro las variables locales y renderizo la vista que quiero, en el caso de homeController, la home. Creo version basica de home que muestra todos los productos en una lista con enlaces a a sus imagenes
+- ### Primera version basica de la App
+
+  1. Borro la carpeta **routes** ya que no voy a usar `import { Router } from 'express'`
+
+  2. Creo carpeta **controllers** en la que creo el archivo **homeController**
+
+  3. Creo y exporto **middleware** que importare y usare en **app.js** para la _ruta home_ `'/'`
+
+  4. El **middleware** crea las _variables locales_ que necesita la **vista** que va a **renderizar**
+
+  5. Cambio **index.ejs** de nombre a **home.ejs** y lo modifico para mostrar un listado de los **productos**
 
 - ### Hacer login y logout. OPCIONAL register TODO
 
