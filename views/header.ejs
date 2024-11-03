@@ -1,4 +1,7 @@
 <header>
   <h1><%= title %></h1>
   <a href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <% if (session.userId && headerLinkText === 'LOGOUT') { %>
+  <a href="/create-product">create new product</a>
+  <% } %>
 </header>

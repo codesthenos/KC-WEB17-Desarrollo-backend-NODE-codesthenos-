@@ -342,11 +342,13 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   3. Creo vista para crear producto
 
-  4. Creo boton para eliminar producto
+  4. Creo boton para eliminar producto y para ir a la vista de crear producto
 
 ---
 
 ## OPTIONAL TODO
+
+- ### OPCIONAL USAR `zod` PARA VALIDAR
 
 - ### OPCIONAL REGISTRO
 

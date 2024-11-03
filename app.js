@@ -4,10 +4,11 @@ import createError from 'http-errors'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
 // controllers
-import { sessionMiddleware, setSessionLocalsMiddleware } from './lib/sessionManager.js'
+import { isLogged, sessionMiddleware, setSessionLocalsMiddleware } from './lib/sessionManager.js'
 import homeController from './controllers/homeController.js'
 import { getLogin, postLogin } from './controllers/loginController.js'
 import logoutController from './controllers/logoutController.js'
+import { deleteProduct, getCreateProduct, postNewProduct } from './controllers/productsController.js'
 
 const app = express()
 
@@ -40,6 +41,11 @@ app.get('/login', getLogin)
 app.post('/login', postLogin)
 // logout
 app.all('/logout', logoutController)
+
+// products
+app.get('/create-product', isLogged, getCreateProduct)
+app.post('/create-product', isLogged, postNewProduct)
+app.get('/delete-product', isLogged, deleteProduct)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

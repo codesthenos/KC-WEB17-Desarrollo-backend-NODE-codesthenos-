@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <%- include('head.ejs') %>
+  <body>
+    <%- include('header.ejs')%>
+    <form method="post">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="price">price</label>
+      <input type="number" id="price" name="price" required />
+
+      <label for="image">Image URL</label>
+      <input type="text" id="image" name="image" required />
+
+      <label for="tag-work">work</label>
+      <input type="checkbox" id="tag-work" name="tag-work" />
+
+      <label for="tag-lifestyle">lifestyle</label>
+      <input type="checkbox" id="tag-lifestyle" name="tag-lifestyle" />
+
+      <label for="tag-motor">motor</label>
+      <input type="checkbox" id="tag-motor" name="tag-motor" />
+
+      <label for="tag-mobile">mobile</label>
+      <input type="checkbox" id="tag-mobile" name="tag-mobile" />
+
+      <button>Submit</button>
+    </form>
+    <% if (error) { %>
+    <p><%= error %></p>
+    <% } %>
+  </body>
+</html>
