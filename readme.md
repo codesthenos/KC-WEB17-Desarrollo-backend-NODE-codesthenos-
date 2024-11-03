@@ -348,7 +348,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ## OPTIONAL TODO
 
-- ### REGISTRO
+- ### OPCIONAL REGISTRO
 
   - Obtengo los datos del **req.body**
 
@@ -363,6 +363,9 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
   - ### OPCTIONAL incluir filtros, paginacion update etc TODO
 
   - ### ejemplo de llamada final: TODO
+
     GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
+
+  - ### OPCIONAL ESTILAR LAS WEBS PARA QUE SE VEAN BONITAS
 
 ## Paquetes NPM
