@@ -2,8 +2,8 @@ import { setupLoginLocals } from '../lib/config.js'
 import { User } from '../models/User.js'
 
 export const getLogin = async (req, res, next) => {
-  setupLoginLocals(res)
   if (req.session.userId) return res.redirect('/')
+  setupLoginLocals(res)
   res.render('login')
 }
 

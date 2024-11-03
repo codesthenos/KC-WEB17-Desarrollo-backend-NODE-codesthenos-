@@ -36,13 +36,15 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.06 [App basica](#primera-version-basica-de-la-app)
 
-   3.07 [Manejo de sesion](#creo-funcionalidad-login-logout-con-manejo-de-sesiones)
+   3.07 [Manejo de sesion](#manejo-de-sesion)
 
-   3.08 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
+   3.08 [Login y logout](#implementacion-del-login-y-logout)
 
-   3.09 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
+   3.09 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
 
-   3.10 [Ejemplo llamada](#ejemplo-de-llamada-final)
+   3.10 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
+
+   3.11 [Ejemplo llamada](#ejemplo-de-llamada-final)
 
 ## Scaffolding creado por defecto con [`npx express-generator . --view=ejs`](https://github.com/expressjs/generator)
 
@@ -249,31 +251,84 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   5. Cambio **index.ejs** de nombre a **home.ejs** y lo modifico para mostrar un listado de los **productos**
 
-- ### Creo funcionalidad login, logout con manejo de sesiones
+- ### Manejo de sesion
 
-  REVISAR TODOD
+  Instalo [express-session](https://github.com/expressjs/session) y [connect-mongo](https://github.com/jdesboeufs/connect-mongo) usando [`npm i express-session`](https://www.npmjs.com/package/express-session) y [`npm i connect-mongo`](https://www.npmjs.com/package/connect-mongo)
 
-  He tocado en los 3 controllers, config, secret y sessionManager, User model, home, login views, app.js instalado dependencias
+  Creo **sessionManager.js** en el que _declaro_ y _exporto_ 3 funciones
 
-  1. Defino la ruta _'/login'_ en **app.js** `app.get('/login', loginController)`
+  1.  `sessionMiddleware` encargado de **generar** la _cookie_ con la informacion de la **sesion** y guardarla en la **MongoDB**
 
-  2. Creo el **loginController.js**
+      Creado _llamando_ a la funcion `session` de `express-session` y en cuyo parametro **store** _llamamos_ a la funcion `MongoStore.create()`
 
-     2.1 que define las variables locales de la _ruta '/login'_ y renderiza la vista **login.ejs** req.session.userId --> redirect
+  2.  `setSessionLocalsMiddleware` encargado de colocar la informacion de la **session** en las variables **locales** para que las _vistas_ puedan acceder a la informacion
 
-     2.2 Creo ruta post----mirar funcion post
+  3.  `isLogged` encargado de **autentificar** si estamos _logueados_ o no, se usara en los _endpoints_ de los **productos**
 
-  3. Creo la vista **login.ejs**
+  4.  Uso los **middlewares** de los puntos 1 y 2 en **app.js** justo antes del _routing_
 
-  4. sesion instalo express-session middlewares session y vistas acceso a session, instalo connect-mongo para guardar la info de la sesion en la DB los uso en app
+      ```js
+      app.use(sessionMiddleware, setSessionLocalsMiddleware)
+      ```
 
-  5. logout
+  5.  En **homeController.js** ahora solo creo la _variable local_ **products** si estoy logueado y los productos que busco en la MongoDB son los del **usuario** logueado
 
-  6. middleware ruta autorizada....
+  6.  En **home.ejs** el renderizado de la lista de **productos** es condicional a si existe un `session.userId` en la _sesion_ actual
 
-  7. Refactorizacion de vistas
+- ### Implementacion del login y logout
 
-- ### Hacer sistema de sesiones para tener rutas autenticadas TODO
+  1. Defino la rutas **GET** y **POST** _'/login'_ y **ALL** _'/logout'_ en **app.js**
+
+     ```js
+     app.get('/login', getLogin)
+     app.post('/login', postLogin)
+     app.all('/logout', logoutController)
+     ```
+
+  2. Creo `getLogin` y `postLogin` en **loginController.js**
+
+     2.1 Creo `setupLoginLocals` en **config.js** para ahorrarme repetir codigo a lo largo de este documento
+
+     2.2 En `getLogin` si hay usuario logueado, **redirecciono** a la _home_ y retorno, si no, defino las variables locales renderizo la vista **login.ejs**
+
+     2.2 En `postLogin`, en este orden
+
+     1. Recupero los _email_ y _password_ del **formulario**
+
+     2. Normalizo el _email_ `email.toLowerCase().trim()`
+     3. Busco un usuario en la **MongoDB** con el _email_ recuperado
+
+        ```js
+        const user = await User.findOne({ email: normalizedEmail })
+        ```
+
+     4. Si no hay usuario, creo las _variable locales_ de **login.ejs**, con el **error** incluido, y renderizo de nuevo **login.ejs**
+
+     5. Si hay usuario, compruebo si la _password_ recuperada coincide con la del **usuario** encontrado
+
+        ```js
+        const passwordMatch = await user.comparePassword(password)
+        ```
+
+     6. Si no coincide, hago lo **mismo** que en el punto **4**
+
+     7. Si coincide, creo la informacion de la **sesion** y redirecciono a la **home**
+
+        ```js
+        req.session.userId = user._id
+        req.session.email = user.email
+        res.redirect('/')
+        ```
+
+     8. Si ocurre algun error, llamo a `next(error)`
+
+  3. Creo la vista **login.ejs**, _formulario_ sencillo que muestra un **error** si fallamos en el login, y tiene un link a la **home**
+
+  4. Creo `index` en **logoutController.js** que usa [regenerate](https://expressjs.com/en/resources/middleware/session.html) de `express-session`, borra la info de la sesion actual y crea una nueva **sin usuario logueado** y nos redirecciona a la _home_
+
+  5. En **header.ejs** el `href` del link que hay de forma condicional no lleva a _'/logout', '/login' o '/'_ dependiendo si estoy renderizando **home.ejs** o **login.ejs** y si hay o no _usuario logueado_
+
+- ### ISLOGGED USAGE
 
 - ### Creacion y borrado de productos OPCIONAL update de producto TODO
 
@@ -285,20 +340,6 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 ---
 
 ## REVISAR TODO
-
-**LogIn**:
-
-- Obtengo los datos del **req.body**
-
-- Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-- Comparo la _password_ enviarda con la de la **base de datos** usando la funcion _bcrypt.compare()_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-- Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-- Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-- Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
-
-**LogOut**:
-
-- Limpiamos el la cookie **token** usando `res.clearCookie('token')`
 
 **Registro**:
 
