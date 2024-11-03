@@ -11,6 +11,9 @@ const userSchema = new Schema({
 userSchema.statics.hashPassword = rawPassword => bcrypt.hash(rawPassword, 10)
 
 // Instance method to compare given rawPassword with instance.password
-userSchema.methods.comparePassword = rawPassword => bcrypt.compare(rawPassword, this.password)
+userSchema.methods.comparePassword = function (rawPassword) {
+  return bcrypt.compare(rawPassword, this.password)
+}
+
 // Mongo Collection 'Users'
 export const User = model('User', userSchema)

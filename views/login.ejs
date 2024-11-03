@@ -5,12 +5,21 @@
     <%- include('header.ejs')%>
     <form method="post">
       <label for="email">Email</label>
-      <input type="email" id="email" name="email" />
+      <input
+        type="email"
+        id="email"
+        name="email"
+        value="<%= email %>"
+        required
+      />
 
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" />
+      <input type="password" id="password" name="password" required />
 
       <button>Submit</button>
     </form>
+    <% if (error) { %>
+    <p><%= error %></p>
+    <% } %>
   </body>
 </html>

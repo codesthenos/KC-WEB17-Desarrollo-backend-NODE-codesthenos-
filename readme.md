@@ -196,8 +196,9 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
      userSchema.statics.hashPassword = (rawPassword) =>
        bcrypt.hash(rawPassword, 10)
 
-     userSchema.methods.comparePassword = (rawPassword) =>
-       bcrypt.compare(rawPassword, this.password)
+     userSchema.methods.comparePassword = function (rawPassword) {
+       return bcrypt.compare(rawPassword, this.password)
+     }
      ```
 
   4. En el _modelo_ **Product** la _propiedad_ **owner** es una _referencia_ al _modelo_ **User**
@@ -250,19 +251,27 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Creo funcionalidad login, logout con manejo de sesiones
 
+  REVISAR TODOD
+
+  He tocado en los 3 controllers, config, secret y sessionManager, User model, home, login views, app.js instalado dependencias
+
   1. Defino la ruta _'/login'_ en **app.js** `app.get('/login', loginController)`
 
-  2. Creo el **loginController.js** que define las variables locales de la _ruta '/login'_ y renderiza la vista **login.ejs**
+  2. Creo el **loginController.js**
+
+     2.1 que define las variables locales de la _ruta '/login'_ y renderiza la vista **login.ejs** req.session.userId --> redirect
+
+     2.2 Creo ruta post----mirar funcion post
 
   3. Creo la vista **login.ejs**
 
-  4. Creo ruta post----
+  4. sesion instalo express-session middlewares session y vistas acceso a session, instalo connect-mongo para guardar la info de la sesion en la DB los uso en app
 
   5. logout
 
-  6. sesion
+  6. middleware ruta autorizada....
 
-  7. middleware ruta autorizada....
+  7. Refactorizacion de vistas
 
 - ### Hacer sistema de sesiones para tener rutas autenticadas TODO
 
