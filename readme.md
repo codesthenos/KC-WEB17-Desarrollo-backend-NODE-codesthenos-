@@ -36,7 +36,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.06 [App basica](#primera-version-basica-de-la-app)
 
-   3.07 [Login](#hacer-register-login-y-logout)
+   3.07 [Manejo de sesion](#creo-funcionalidad-login-logout-con-manejo-de-sesiones)
 
    3.08 [CRUD](#creacion-y-borrado-de-productos-opcional-update-de-producto)
 
@@ -248,7 +248,21 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   5. Cambio **index.ejs** de nombre a **home.ejs** y lo modifico para mostrar un listado de los **productos**
 
-- ### Hacer login y logout. OPCIONAL register TODO
+- ### Creo funcionalidad login, logout con manejo de sesiones
+
+  1. Defino la ruta _'/login'_ en **app.js** `app.get('/login', loginController)`
+
+  2. Creo el **loginController.js** que define las variables locales de la _ruta '/login'_ y renderiza la vista **login.ejs**
+
+  3. Creo la vista **login.ejs**
+
+  4. Creo ruta post----
+
+  5. logout
+
+  6. sesion
+
+  7. middleware ruta autorizada....
 
 - ### Hacer sistema de sesiones para tener rutas autenticadas TODO
 

@@ -3,8 +3,9 @@ import express from 'express'
 import createError from 'http-errors'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-
+// controllers
 import homeController from './controllers/homeController.js'
+import loginController from './controllers/loginController.js'
 
 const app = express()
 
@@ -29,6 +30,8 @@ app.use(express.static(join(import.meta.dirname, 'public')))
 
 // homepage
 app.get('/', homeController)
+// login
+app.get('/login', loginController)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

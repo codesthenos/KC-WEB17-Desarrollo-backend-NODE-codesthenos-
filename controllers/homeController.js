@@ -3,6 +3,8 @@ import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
   res.locals.title = APP_TITLE
+  res.locals.headerLinkHref = '/login'
+  res.locals.headerLinkText = 'LOGIN'
   res.locals.products = await Product.find()
   res.render('home')
 }
