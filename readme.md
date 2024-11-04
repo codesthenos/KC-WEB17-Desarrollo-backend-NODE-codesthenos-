@@ -322,7 +322,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
      8. Si ocurre algun error, llamo a `next(error)`
 
-  3. Creo la vista **login.ejs**, _formulario_ sencillo que muestra un **error** si fallamos en el login, y tiene un link a la **home**
+  3. Creo la vista **login.ejs**, _formulario_ sencillo que muestra un **error** si fallamos en el login, y tiene un link a la **home**, el boton `submit` hace una peticion **POST** a `/login`
 
   4. Creo `index` en **logoutController.js** que usa [regenerate](https://expressjs.com/en/resources/middleware/session.html) de `express-session`, borra la info de la sesion actual y crea una nueva **sin usuario logueado** y nos redirecciona a la _home_
 
@@ -330,27 +330,67 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Creacion y borrado de productos OPCIONAL update de producto TODO
 
-  1. creo los middlewares de los endpoints en productsController.js
+  1. Creo los **middlewares** en **productsController.js** para manejar las rutas de _product_
 
-     1. Creo funcion GET products
+     1. En `getCreateProduct` defino las **locals** que necesito para renderizar **create-product.ejs**
 
-     2. funcion POST product cambio un el name de los checkbox e incluyo un value para poder acceder a los tags facilmente. mirar funcion hecha
+     2. En `postNewProduct` en este orden
 
-     3. DELETE product mirar funcion, pongo anchor en el home.ejs
+        1. Guardo en _variables_ los datos del _formulario_ usando el **req.body**
 
-  2. Creo endpoints en app.js, usando isLogged y los middlewares creados
+        2. Guardo la variable _userId_ usando el **req.session.userId**
 
-  3. Creo vista para crear producto
+        3. #### TODO VALIDACION DE LOS DATOS DEL FORMULARION CON ZOD
 
-  4. Creo boton para eliminar producto y para ir a la vista de crear producto
+        4. Guardo en la variable _newProduct_ un `new Product` con los datos obtenidos en el paso `1.` y usando `await newProduct.save()` lo guardo en la **MongoDB**
+
+        5. Redireciono a `'/'`
+
+        6. Llamo a `next(error)` en caso de error
+
+     3. En `deleteProduct` en este orden
+
+        1. Guardo la variable _productId_ leyendo los parametros de ruta usando **req.params.id**
+
+        2. Guardo el _userId_ como en `postNewProduct`, leyendo la sesion **req.session.userId**
+
+        3. Busco con un _producto_ con el _productId_ en la **MongoBD** usando `await Product.findById(productId)`
+
+        4. Si no existe un _producto_ en la **MongoDB** con ese \__id_ muestro un warn en consola, llamo a `next(createError(404))` [createError info](https://github.com/jshttp/http-errors) y salgo de la funcion
+
+        5. Si el _userId_ obetindo de la sesion en el paso `2.` no coincide con el `product.owner.toString()` quiere decir que el usuario que esta intentando borrar el producto, no es el dueño del producto, asi que lanzamos `next(createError(401))` y salgo de la funcion
+
+        6. En caso contrario, elimino el _producto_ de la **MongoDB** usando `await Product.deleteOne({ _id: productId })`
+
+        7. Redireciono a `'/'`
+
+        8. Llamo a `next(error)` en caso de cualquier otro error
+
+     4. #### TODO En `updateProduct` TODO
+
+  2. Creo las rutas relacionadas con _product_ en **app.js**, usando primero el _middleware_ **isLogged** para comprobar _autenticacion_ y seguido, los _middlewares_ creados
+
+     ```js
+     app.get('/create-product', isLogged, getCreateProduct)
+     app.post('/create-product', isLogged, postNewProduct)
+     app.get('/delete-product/:id', isLogged, deleteProduct)
+     ```
+
+  3. Creo _vista_ **create-product.ejs** para crear producto, en todos los checkboxes para los **tags** uso el mismo `name="tag"` e incluyo `value=<tagName>` para poder acceder a los tags facilmente en el servidor
+
+  4. Creo dos enlaces, `<a>` uno en el **header.ejs** que hace una peticion **GET** a `/create-product` y otro en **home.ejs** que hace una peticion **GET** a `/delete-product/<productId>` para eliminar producto
+
+  5. El boton `submit` de la vista **create-product.ejs** hace una peticion **POST** a `/create-product`
 
 ---
 
-## OPTIONAL TODO
+## TODO
 
-- ### OPCIONAL USAR `zod` PARA VALIDAR
+- ### `update` etc TODO
 
-- ### OPCIONAL REGISTRO
+- ### USAR `zod` PARA VALIDAR EN `CRUD`
+
+- ### REGISTRO `CREAR REGISTERCONTROLLER`
 
   - Obtengo los datos del **req.body**
 
@@ -362,12 +402,12 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
   - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
   - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
-  - ### OPCTIONAL incluir filtros, paginacion update etc TODO
+  - ### `incluir filtros, paginacion`
 
   - ### ejemplo de llamada final: TODO
 
     GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
 
-  - ### OPCIONAL ESTILAR LAS WEBS PARA QUE SE VEAN BONITAS No se ven bonitas, pero estan estiladas
-
 ## Paquetes NPM
+
+## Como usar app en tu ordenador
