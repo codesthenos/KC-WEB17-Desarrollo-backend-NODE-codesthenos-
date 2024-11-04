@@ -81,7 +81,6 @@ body {
       border-radius: 5px;
       padding: .25rem;
       div {
-        height: 146px;
         h2 {
           margin: 0;
           margin-bottom: 1rem;
@@ -95,6 +94,7 @@ body {
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
+        gap: .5rem;
       }
     }
   }
