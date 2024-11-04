@@ -45,7 +45,7 @@ app.all('/logout', logoutController)
 // products
 app.get('/create-product', isLogged, getCreateProduct)
 app.post('/create-product', isLogged, postNewProduct)
-app.get('/delete-product', isLogged, deleteProduct)
+app.get('/delete-product/:id', isLogged, deleteProduct)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

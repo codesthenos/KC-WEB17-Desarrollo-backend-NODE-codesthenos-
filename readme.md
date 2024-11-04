@@ -336,7 +336,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
      2. funcion POST product
 
-     3. DELETE prodyct
+     3. DELETE product mirar funcion, pongo anchor en el home.ejs
 
   2. Creo endpoints en app.js, usando isLogged y los middlewares creados
 
@@ -368,6 +368,6 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
     GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
 
-  - ### OPCIONAL ESTILAR LAS WEBS PARA QUE SE VEAN BONITAS
+  - ### OPCIONAL ESTILAR LAS WEBS PARA QUE SE VEAN BONITAS No se ven bonitas, pero estan estiladas
 
 ## Paquetes NPM
