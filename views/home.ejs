@@ -3,22 +3,27 @@
   <%- include('head.ejs') %>
   <body>
     <%- include('header.ejs') %>
-    <div>
+    <main class="main">
       <% if (session.userId) { %>
       <ul>
         <% products.map((product, index) => { %>
         <li>
-          <p>Product <%= index + 1 %></p>
-          <p>Name: <%= product.name %></p>
-          <p>Price: <%= product.price %> €</p>
-          <% product.tags.map((tag, index) => { %>
-          <p>Tag <%= index + 1 %>: <%= tag %></p>
-          <% }) %>
-          <a href="<%= product.image %>"><%= product.name %> image</a>
+          <div>
+            <h2>Product <%= index + 1 %></h2>
+            <p>Name: <%= product.name %></p>
+            <p>Price: <%= product.price %> €</p>
+            <% product.tags.map((tag, index) => { %>
+            <p>Tag <%= index + 1 %>: <%= tag %></p>
+            <% }) %>
+          </div>
+          <div class="buttons-image">
+            <a href="/delete-product" class="btn">delete</a>
+            <img src="<%= product.image %>" alt="<%= product.name %> image" />
+          </div>
         </li>
         <% }) %>
       </ul>
       <% } %>
-    </div>
+    </main>
   </body>
 </html>

@@ -3,29 +3,43 @@
   <%- include('head.ejs') %>
   <body>
     <%- include('header.ejs')%>
-    <form method="post">
-      <label for="name">Name</label>
-      <input type="text" id="name" name="name" required />
+    <form method="post" class="form">
+      <div>
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div>
+        <label for="price">price</label>
+        <input type="number" id="price" name="price" required />
+      </div>
+      <div>
+        <label for="image">Image URL</label>
+        <input type="text" id="image" name="image" />
+      </div>
+      <div class="tag-wrapper">
+        <div>
+          <div class="tag-div">
+            <label for="tag-work">work</label>
+            <input type="checkbox" id="tag-work" name="tag-work" />
+          </div>
+          <div class="tag-div">
+            <label for="tag-lifestyle">lifestyle</label>
+            <input type="checkbox" id="tag-lifestyle" name="tag-lifestyle" />
+          </div>
+        </div>
+        <div>
+          <div class="tag-div">
+            <input type="checkbox" id="tag-motor" name="tag-motor" />
+            <label for="tag-motor">motor</label>
+          </div>
+          <div class="tag-div">
+            <input type="checkbox" id="tag-mobile" name="tag-mobile" />
+            <label for="tag-mobile">mobile</label>
+          </div>
+        </div>
+      </div>
 
-      <label for="price">price</label>
-      <input type="number" id="price" name="price" required />
-
-      <label for="image">Image URL</label>
-      <input type="text" id="image" name="image" required />
-
-      <label for="tag-work">work</label>
-      <input type="checkbox" id="tag-work" name="tag-work" />
-
-      <label for="tag-lifestyle">lifestyle</label>
-      <input type="checkbox" id="tag-lifestyle" name="tag-lifestyle" />
-
-      <label for="tag-motor">motor</label>
-      <input type="checkbox" id="tag-motor" name="tag-motor" />
-
-      <label for="tag-mobile">mobile</label>
-      <input type="checkbox" id="tag-mobile" name="tag-mobile" />
-
-      <button>Submit</button>
+      <button class="btn">Submit</button>
     </form>
     <% if (error) { %>
     <p><%= error %></p>
