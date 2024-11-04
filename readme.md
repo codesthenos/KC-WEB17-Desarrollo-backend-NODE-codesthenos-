@@ -334,7 +334,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
      1. Creo funcion GET products
 
-     2. funcion POST product
+     2. funcion POST product cambio un el name de los checkbox e incluyo un value para poder acceder a los tags facilmente. mirar funcion hecha
 
      3. DELETE product mirar funcion, pongo anchor en el home.ejs
 

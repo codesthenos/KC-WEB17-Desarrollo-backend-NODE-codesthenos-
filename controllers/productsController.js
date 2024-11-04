@@ -9,8 +9,24 @@ export const getCreateProduct = (req, res, next) => {
   res.render('create-product')
 }
 
-export const postNewProduct = (req, res, next) => {
-  console.log('SAVE PRODUCT IN DATABASE')
+export const postNewProduct = async (req, res, next) => {
+  try {
+    const { name, price, image, tags } = req.body
+
+    const userId = req.session.userId
+    const newProduct = new Product({
+      name,
+      price,
+      image,
+      tags,
+      owner: userId
+    })
+
+    await newProduct.save()
+    res.redirect('/')
+  } catch (error) {
+    next(error)
+  }
 }
 
 export const deleteProduct = async (req, res, next) => {
