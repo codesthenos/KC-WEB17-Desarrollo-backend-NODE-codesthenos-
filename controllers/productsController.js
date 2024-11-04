@@ -11,9 +11,12 @@ export const getCreateProduct = (req, res, next) => {
 
 export const postNewProduct = async (req, res, next) => {
   try {
+    // get data from form
     const { name, price, image, tags } = req.body
-
+    // get userId fromsession
     const userId = req.session.userId
+    // Validations with zod
+    // create and store a new Product
     const newProduct = new Product({
       name,
       price,
@@ -21,7 +24,7 @@ export const postNewProduct = async (req, res, next) => {
       tags,
       owner: userId
     })
-
+    // save the product in the MongoDB
     await newProduct.save()
     res.redirect('/')
   } catch (error) {
