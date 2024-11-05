@@ -1,5 +1,8 @@
+import { z } from 'zod'
 import { setupLoginLocals } from '../lib/config.js'
+import { loginSchema } from '../lib/validatorSchemas.js'
 import { User } from '../models/User.js'
+import { handleValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getLogin = async (req, res, next) => {
   if (req.session.userId) return res.redirect('/')
@@ -11,6 +14,8 @@ export const postLogin = async (req, res, next) => {
   try {
     // get form data
     const { email, password } = req.body
+    // validate request body
+    loginSchema.parse(req.body)
     // normalize email
     const normalizedEmail = email.toLowerCase().trim()
     // search User with the email in the MongoDB
@@ -33,6 +38,10 @@ export const postLogin = async (req, res, next) => {
     req.session.email = user.email
     res.redirect('/')
   } catch (error) {
-    next(error)
+    if (error instanceof z.ZodError) {
+      handleValidationError(error, res, req.body.email)
+    } else {
+      next(error)
+    }
   }
 }

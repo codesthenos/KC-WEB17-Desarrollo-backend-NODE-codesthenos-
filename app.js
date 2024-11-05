@@ -3,8 +3,9 @@ import express from 'express'
 import createError from 'http-errors'
 import cookieParser from 'cookie-parser'
 import logger from 'morgan'
-// controllers
+// session managers
 import { isLogged, sessionMiddleware, setSessionLocalsMiddleware } from './lib/sessionManager.js'
+// controllers
 import homeController from './controllers/homeController.js'
 import { getLogin, postLogin } from './controllers/loginController.js'
 import logoutController from './controllers/logoutController.js'
