@@ -1,25 +1,29 @@
 import createError from 'http-errors'
+import { z } from 'zod'
 import { Product } from '../models/Product.js'
+import { productSchema } from '../lib/validatorSchemas.js'
+import { CREATE_PRODUCT_TITLE as title, setLocals } from '../lib/config.js'
+import { handleProductValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getCreateProduct = (req, res, next) => {
-  res.locals.title = 'CREATE PRODUCT NODEPOP'
-  res.locals.headerLinkHref = '/'
-  res.locals.headerLinkText = 'HOME'
-  res.locals.error = ''
+  setLocals(res, { title })
   res.render('create-product')
 }
 
 export const postNewProduct = async (req, res, next) => {
+  // get data from form
+  const { name, price, image, tags } = req.body
   try {
-    // get data from form
-    const { name, price, image, tags } = req.body
+    // normalize tags to array if only one selected
+    const normalizedTags = typeof tags === 'string' ? [tags] : tags
     // get userId fromsession
     const userId = req.session.userId
     // Validations with zod
+    productSchema.parse({ ...req.body, tags: normalizedTags })
     // create and store a new Product
     const newProduct = new Product({
       name,
-      price,
+      price: parseFloat(price),
       image,
       tags,
       owner: userId
@@ -28,7 +32,14 @@ export const postNewProduct = async (req, res, next) => {
     await newProduct.save()
     res.redirect('/')
   } catch (error) {
-    next(error)
+    if (error instanceof z.ZodError) {
+      handleProductValidationError(error, res, name, price, image)
+    } else if (error.errorResponse.code === 11000) {
+      setLocals(res, { title, productName: name, productPrice: price, productImage: image, error: 'NAME cant be repeated' })
+      res.render('create-product')
+    } else {
+      next(error)
+    }
   }
 }
 

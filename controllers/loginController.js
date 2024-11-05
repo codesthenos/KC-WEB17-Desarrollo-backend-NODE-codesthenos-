@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { setupLoginLocals } from '../lib/config.js'
+import { LOGIN_TITLE as title, setLocals } from '../lib/config.js'
 import { loginSchema } from '../lib/validatorSchemas.js'
 import { User } from '../models/User.js'
-import { handleValidationError } from '../lib/zodErrorHandlers.js'
+import { handleLoginValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getLogin = async (req, res, next) => {
   if (req.session.userId) return res.redirect('/')
-  setupLoginLocals(res)
+  setLocals(res, { title })
   res.render('login')
 }
 
@@ -22,14 +22,14 @@ export const postLogin = async (req, res, next) => {
     const user = await User.findOne({ email: normalizedEmail })
     // check if there is a user in the MongoDB with the email gotten from the form
     if (!user) {
-      setupLoginLocals(res, { error: 'Invalid email', email })
+      setLocals(res, { title, email, error: 'Invalid email' })
       res.render('login')
       return
     }
     // If user found, check if password matches
     const passwordMatch = await user.comparePassword(password)
     if (!passwordMatch) {
-      setupLoginLocals(res, { error: 'Invalid credentials', email })
+      setLocals(res, { title, email, error: 'Invalid credentials' })
       res.render('login')
       return
     }
@@ -39,7 +39,7 @@ export const postLogin = async (req, res, next) => {
     res.redirect('/')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleValidationError(error, res, req.body.email)
+      handleLoginValidationError(error, res, req.body.email)
     } else {
       next(error)
     }
