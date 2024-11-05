@@ -296,23 +296,26 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
      1. Recupero los _email_ y _password_ del **formulario**
 
      2. Normalizo el _email_ `email.toLowerCase().trim()`
-     3. Busco un usuario en la **MongoDB** con el _email_ recuperado
+
+     3. #### TODO VALIDACION DE LOS DATOS DEL FORMULARION CON ZOD
+
+     4. Busco un usuario en la **MongoDB** con el _email_ recuperado
 
         ```js
         const user = await User.findOne({ email: normalizedEmail })
         ```
 
-     4. Si no hay usuario, creo las _variable locales_ de **login.ejs**, con el **error** incluido, y renderizo de nuevo **login.ejs**
+     5. Si no hay usuario, creo las _variable locales_ de **login.ejs**, con el **error** incluido, y renderizo de nuevo **login.ejs**
 
-     5. Si hay usuario, compruebo si la _password_ recuperada coincide con la del **usuario** encontrado
+     6. Si hay usuario, compruebo si la _password_ recuperada coincide con la del **usuario** encontrado
 
         ```js
         const passwordMatch = await user.comparePassword(password)
         ```
 
-     6. Si no coincide, hago lo **mismo** que en el punto **4**
+     7. Si no coincide, hago lo **mismo** que en el punto **4**
 
-     7. Si coincide, creo la informacion de la **sesion** y redirecciono a la **home**
+     8. Si coincide, creo la informacion de la **sesion** y redirecciono a la **home**
 
         ```js
         req.session.userId = user._id
@@ -320,7 +323,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
         res.redirect('/')
         ```
 
-     8. Si ocurre algun error, llamo a `next(error)`
+     9. Si ocurre algun otro error, llamo a `next(error)`
 
   3. Creo la vista **login.ejs**, _formulario_ sencillo que muestra un **error** si fallamos en el login, y tiene un link a la **home**, el boton `submit` hace una peticion **POST** a `/login`
 
@@ -386,9 +389,9 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ## TODO
 
-- ### `update` etc TODO
+- ### USAR `zod` PARA VALIDAR EN `createProduct, updateProduct, loginUser, registerUser`
 
-- ### USAR `zod` PARA VALIDAR EN `CRUD`
+- ### `update` etc TODO
 
 - ### REGISTRO `CREAR REGISTERCONTROLLER`
 
@@ -402,11 +405,11 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
   - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
   - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
 
-  - ### `incluir filtros, paginacion`
+- ### `incluir filtros, paginacion`
 
-  - ### ejemplo de llamada final: TODO
+- ### ejemplo de llamada final: TODO
 
-    GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
+  GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
 
 ## Paquetes NPM
 
