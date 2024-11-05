@@ -9,7 +9,8 @@ import { isLogged, sessionMiddleware, setSessionLocalsMiddleware } from './lib/s
 import homeController from './controllers/homeController.js'
 import { getLogin, postLogin } from './controllers/loginController.js'
 import logoutController from './controllers/logoutController.js'
-import { deleteProduct, getCreateProduct, postNewProduct } from './controllers/productsController.js'
+import { getRegister, postRegister } from './controllers/registerController.js'
+import { deleteProduct, getCreateProduct, postCreateProduct, getUpdateProduct, postUpdateProduct } from './controllers/productsController.js'
 
 const app = express()
 
@@ -37,16 +38,25 @@ app.use(sessionMiddleware, setSessionLocalsMiddleware)
 
 // homepage
 app.get('/', homeController)
+/* Users */
 // login
 app.get('/login', getLogin)
 app.post('/login', postLogin)
 // logout
 app.all('/logout', logoutController)
+// register
+app.get('/register', getRegister)
+app.post('/register', postRegister)
 
-// products
+/* Products */
+// create
 app.get('/create-product', isLogged, getCreateProduct)
-app.post('/create-product', isLogged, postNewProduct)
+app.post('/create-product', isLogged, postCreateProduct)
+// delete
 app.get('/delete-product/:id', isLogged, deleteProduct)
+// update
+app.get('/update-product/:id', isLogged, getUpdateProduct)
+app.post('/update-product/:id', isLogged, postUpdateProduct)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

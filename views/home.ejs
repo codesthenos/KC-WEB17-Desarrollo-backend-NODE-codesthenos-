@@ -17,7 +17,14 @@
             <% }) %>
           </div>
           <div class="buttons-image">
-            <a href="/delete-product/<%= product._id %>" class="btn">delete</a>
+            <div>
+              <a href="/delete-product/<%= product._id %>" class="btn"
+                >delete</a
+              >
+              <a href="/update-product/<%= product._id %>" class="btn"
+                >update</a
+              >
+            </div>
             <img src="<%= product.image %>" alt="<%= product.name %> image" />
           </div>
         </li>

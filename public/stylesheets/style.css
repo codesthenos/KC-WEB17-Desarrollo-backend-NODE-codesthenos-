@@ -80,6 +80,7 @@ body {
       border: 1px azure solid;
       border-radius: 5px;
       padding: .25rem;
+      min-height: 150px;
       div {
         h2 {
           margin: 0;
@@ -92,9 +93,8 @@ body {
       .buttons-image {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: space-around;
         align-items: center;
-        gap: .5rem;
       }
     }
   }

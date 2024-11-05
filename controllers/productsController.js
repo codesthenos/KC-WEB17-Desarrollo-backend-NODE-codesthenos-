@@ -10,7 +10,7 @@ export const getCreateProduct = (req, res, next) => {
   res.render('create-product')
 }
 
-export const postNewProduct = async (req, res, next) => {
+export const postCreateProduct = async (req, res, next) => {
   // get data from form
   const { name, price, image, tags } = req.body
   try {
@@ -71,3 +71,7 @@ export const deleteProduct = async (req, res, next) => {
     next(error)
   }
 }
+
+export const getUpdateProduct = (req, res) => { res.send('<h1>UPDATE PRODUCT</h1>') }
+
+export const postUpdateProduct = () => {}
