@@ -38,25 +38,26 @@
         <div>
           <div class="tag-div">
             <label for="tag-work">work</label>
-            <input type="checkbox" id="tag-work" name="tags" value="work" />
+            <input type="checkbox" id="tag-work" name="tags" value="work" <%=
+            productTags && productTags.includes("work") ? 'checked' : '' %> />
           </div>
           <div class="tag-div">
             <label for="tag-lifestyle">lifestyle</label>
-            <input
-              type="checkbox"
-              id="tag-lifestyle"
-              name="tags"
-              value="lifestyle"
-            />
+            <input type="checkbox" id="tag-lifestyle" name="tags"
+            value="lifestyle" <%= productTags &&
+            productTags.includes("lifestyle") ? 'checked' : '' %> />
           </div>
         </div>
         <div>
           <div class="tag-div">
-            <input type="checkbox" id="tag-motor" name="tags" value="motor" />
+            <input type="checkbox" id="tag-motor" name="tags" value="motor" <%=
+            productTags && productTags.includes("motor") ? 'checked' : '' %> />
             <label for="tag-motor">motor</label>
           </div>
           <div class="tag-div">
-            <input type="checkbox" id="tag-mobile" name="tags" value="mobile" />
+            <input type="checkbox" id="tag-mobile" name="tags" value="mobile"
+            <%= productTags && productTags.includes("mobile") ? 'checked' : ''
+            %> />
             <label for="tag-mobile">mobile</label>
           </div>
         </div>

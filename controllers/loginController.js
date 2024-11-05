@@ -22,14 +22,14 @@ export const postLogin = async (req, res, next) => {
     const user = await User.findOne({ email: normalizedEmail })
     // check if there is a user in the MongoDB with the email gotten from the form
     if (!user) {
-      setLocals(res, { title, email, error: 'Invalid email' })
+      setLocals(res, { title, email, error: '   Invalid email' })
       res.render('login')
       return
     }
     // If user found, check if password matches
     const passwordMatch = await user.comparePassword(password)
     if (!passwordMatch) {
-      setLocals(res, { title, email, error: 'Invalid credentials' })
+      setLocals(res, { title, email, error: '   Invalid credentials' })
       res.render('login')
       return
     }

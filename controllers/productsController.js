@@ -33,9 +33,9 @@ export const postCreateProduct = async (req, res, next) => {
     res.redirect('/')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleProductValidationError(error, res, name, price, image)
+      handleProductValidationError(error, res, name, price, image, tags)
     } else if (error.errorResponse.code === 11000) {
-      setLocals(res, { title, productName: name, productPrice: price, productImage: image, error: 'NAME cant be repeated' })
+      setLocals(res, { title, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
       res.render('create-product')
     } else {
       next(error)
