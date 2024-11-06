@@ -387,7 +387,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ---
 
-## TODO
+# REVISAR LOS TODOS QUE TENGO EN MEDIO DEL README ANTES DE SEGUIR
 
 - ### USAR `zod` PARA VALIDAR EN `createProduct, updateProduct, loginUser, registerUser`
 
@@ -395,15 +395,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### REGISTRO `CREAR REGISTERCONTROLLER`
 
-  - Obtengo los datos del **req.body**
-
-  - Compruebo si el _usuario_ ya existe para lanzar un error de **bad request**
-  - Encripto la _password_ antes de enviarla a la **base de datos** usando la funcion _bcrypt_ importada del modulo [`npm i bcryptjs`](https://www.npmjs.com/package/bcryptjs)
-  - Creo nuevo _usuario_ con los datos del **req.body**
-  - utilizo el `.save()` de _mongoose_ para guardar el registro en la **base de datos**
-  - Creo **token** usando la funcion _jwt_ importada de [`npm i jsonwebtoken`](https://www.npmjs.com/package/jsonwebtoken)
-  - Creo una **cookie** usando `res.cookie('token', token)`, funcion de _express_ con la info del **token**
-  - Devuelvo los datos que necesitare en la **view** con `res.status(200).json(<data>)` funcion de _express_
+## TODO
 
 - ### `incluir filtros, paginacion`
 
