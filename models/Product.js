@@ -8,4 +8,13 @@ const productSchema = new Schema({
   owner: { type: Schema.Types.ObjectId, ref: 'User' }
 }, { timestamps: true })
 
+// static method for listing products
+productSchema.statics.list = ({ filters = {}, options = {} }) => {
+  return Product.find(filters)
+    .sort(options.sort)
+    .skip(options.skip)
+    .limit(options.limit)
+    .exec()
+}
+
 export const Product = model('Product', productSchema)

@@ -66,8 +66,13 @@ body {
   max-width: 900px;
   margin: 0 auto;
   padding: 0 1rem;
+  .nav-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+  }
   ul {
-    margin: 0;
+    margin: 2rem 0;
     padding: 0;
     list-style: none;
     display: grid;

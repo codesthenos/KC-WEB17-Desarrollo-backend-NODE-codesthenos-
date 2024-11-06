@@ -5,31 +5,43 @@
     <%- include('header.ejs') %>
     <main class="main">
       <% if (session.userId) { %>
-      <ul>
-        <% products.map((product, index) => { %>
-        <li>
-          <div>
-            <h2>Product <%= index + 1 %></h2>
-            <p>Name: <%= product.name %></p>
-            <p>Price: <%= product.price %> €</p>
-            <% product.tags.map((tag, index) => { %>
-            <p>Tag <%= index + 1 %>: <%= tag %></p>
-            <% }) %>
-          </div>
-          <div class="buttons-image">
+        <div class="nav-pagination">
+          <% if (queryParams.skip) { %>
+            <a class="btn" href="/">Show All</a>
+            <% if (queryParams.skip > 0) { %>
+              <a class="btn" href="/?skip=<%= +queryParams.skip - +queryParams.limit < 0 ? 0 : +queryParams.skip - +queryParams.limit %>&limit=<%= queryParams.limit %>">Previous page</a>
+            <% } %>
+            <% if (+queryParams.skip + +queryParams.limit < productsLength) { %>
+              <a class="btn" href="/?skip=<%= +queryParams.skip + +queryParams.limit %>&limit=<%= queryParams.limit %>">Next page</a>
+            <% } %>
+          <% } else { %>
+              <a class="btn" href="/?skip=0&limit=3">Show 3 by 3</a>
+          <% } %>
+        </div>
+        <ul>
+          <% products.map((product, index) => { %>
+          <li>
             <div>
-              <a href="/delete-product/<%= product._id %>" class="btn"
-                >delete</a
-              >
-              <a href="/update-product/<%= product._id %>" class="btn"
-                >update</a
-              >
+              <h2>Name: <%= product.name %></h2>
+              <p>Price: <%= product.price %> €</p>
+              <% product.tags.map((tag, index) => { %>
+              <p>Tag <%= index + 1 %>: <%= tag %></p>
+              <% }) %>
             </div>
-            <img src="<%= product.image %>" alt="<%= product.name %> image" />
-          </div>
-        </li>
-        <% }) %>
-      </ul>
+            <div class="buttons-image">
+              <div>
+                <a href="/delete-product/<%= product._id %>" class="btn"
+                  >delete</a
+                >
+                <a href="/update-product/<%= product._id %>" class="btn"
+                  >update</a
+                >
+              </div>
+              <img src="<%= product.image %>" alt="<%= product.name %> image" />
+            </div>
+          </li>
+          <% }) %>
+        </ul>
       <% } %>
     </main>
   </body>
