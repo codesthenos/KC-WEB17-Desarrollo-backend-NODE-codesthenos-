@@ -1,9 +1,19 @@
 <header class="header">
   <h1><%= title %></h1>
-  <% if (session.userId && headerLinkText === 'LOGOUT') { %>
+  <% if (title === 'CODESTHENOS-NODEPOP' && session.userId) { %>
   <a class="btn" href="/create-product">create new product</a>
-  <% } else { %>
-  <a class="btn" href="/register">REGISTER</a>
-  <% } %>
   <a class="btn" href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <% } %> <% if (title === 'CODESTHENOS-NODEPOP' && !session.userId) { %>
+  <a class="btn" href="/register">REGISTER</a>
+  <a class="btn" href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <% } %> <% if (title === 'LOGIN CODESTHENOS-NODEPOP') { %>
+  <a class="btn" href="/register">REGISTER</a>
+  <a class="btn" href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <% } %> <% if (title === 'REGISTER CODESTHENOS-NODEPOP') { %>
+  <a class="btn" href="/login">LOGIN</a>
+  <a class="btn" href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <% } %> <% if (title === 'CREATE PRODUCT NODEPOP' || title === 'UPDATE PRODUCT NODEPOP') { %>
+  <a class="btn" href="<%= headerLinkHref %>"><%= headerLinkText %></a>
+  <a class="btn" href="/logout">LOGOUT</a>
+  <% } %>
 </header>

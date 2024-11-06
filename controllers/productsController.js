@@ -2,11 +2,11 @@ import createError from 'http-errors'
 import { z } from 'zod'
 import { Product } from '../models/Product.js'
 import { productSchema } from '../lib/validatorSchemas.js'
-import { CREATE_PRODUCT_TITLE as title, setLocals } from '../lib/config.js'
+import { CREATE_PRODUCT_TITLE, setLocals, UPDATE_PRODUCT_TITLE } from '../lib/config.js'
 import { handleProductValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getCreateProduct = (req, res, next) => {
-  setLocals(res, { title })
+  setLocals(res, { title: CREATE_PRODUCT_TITLE })
   res.render('create-product')
 }
 
@@ -35,7 +35,7 @@ export const postCreateProduct = async (req, res, next) => {
     if (error instanceof z.ZodError) {
       handleProductValidationError(error, res, name, price, image, tags)
     } else if (error.errorResponse.code === 11000) {
-      setLocals(res, { title, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
+      setLocals(res, { title: CREATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
       res.render('create-product')
     } else {
       next(error)
@@ -72,6 +72,11 @@ export const deleteProduct = async (req, res, next) => {
   }
 }
 
-export const getUpdateProduct = (req, res) => { res.send('<h1>UPDATE PRODUCT</h1>') }
+export const getUpdateProduct = (req, res) => {
+  setLocals(res, { title: UPDATE_PRODUCT_TITLE })
+  res.render('create-product')
+}
 
-export const postUpdateProduct = () => {}
+export const postUpdateProduct = () => {
+
+}
