@@ -72,9 +72,18 @@ export const deleteProduct = async (req, res, next) => {
   }
 }
 
-export const getUpdateProduct = (req, res) => {
-  setLocals(res, { title: UPDATE_PRODUCT_TITLE })
-  res.render('create-product')
+export const getUpdateProduct = async (req, res, next) => {
+  try {
+    // get productID from route params
+    const { id } = req.params
+    // store in a variable the user from the MongoDB
+    const { name, price, image, tags } = await Product.findById(id)
+    // Set locals using the user data
+    setLocals(res, { title: UPDATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags })
+    res.render('create-product')
+  } catch (error) {
+    next(error)
+  }
 }
 
 export const postUpdateProduct = () => {
