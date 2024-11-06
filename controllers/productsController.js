@@ -77,8 +77,22 @@ export const getUpdateProduct = async (req, res, next) => {
   try {
     // get productID from route params
     const { id } = req.params
+    // get userId from session
+    const userId = req.session.userId
     // store in a variable the user from the MongoDB
-    const { name, price, image, tags } = await Product.findById(id)
+    const { name, price, image, tags, owner } = await Product.findById(id)
+    // check if there is an existen product with the id from the route param
+    if (!name) {
+      console.warn(`WARNING | product with id ${id} is not found`)
+      next(createError(404))
+      return
+    }
+    // check if the userId from the session is the owner of the product
+    if (userId !== owner.toString()) {
+      console.warn(`WARNING | user with id ${userId} is trying to update a product from other owner`)
+      next(createError(401))
+      return
+    }
     // Set locals using the user data
     setLocals(res, { title: UPDATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags })
     res.render('create-product')
