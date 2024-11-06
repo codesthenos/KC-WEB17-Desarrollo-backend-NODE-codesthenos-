@@ -39,7 +39,7 @@ export const postLogin = async (req, res, next) => {
     res.redirect('/')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleLoginValidationError(error, res, req.body.email)
+      handleLoginValidationError(title, error, res, req.body.email)
     } else {
       next(error)
     }

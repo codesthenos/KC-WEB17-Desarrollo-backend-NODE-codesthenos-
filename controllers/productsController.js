@@ -16,7 +16,7 @@ export const postCreateProduct = async (req, res, next) => {
   try {
     // normalize tags to array if only one selected
     const normalizedTags = typeof tags === 'string' ? [tags] : tags
-    // get userId fromsession
+    // get userId from session
     const userId = req.session.userId
     // Validations with zod
     productSchema.parse({ ...req.body, tags: normalizedTags })
@@ -30,10 +30,11 @@ export const postCreateProduct = async (req, res, next) => {
     })
     // save the product in the MongoDB
     await newProduct.save()
+    console.log('SUCCESSFULLY CREATED PRODUCT: ' + newProduct)
     res.redirect('/')
   } catch (error) {
     if (error instanceof z.ZodError) {
-      handleProductValidationError(error, res, name, price, image, tags)
+      handleProductValidationError(CREATE_PRODUCT_TITLE, error, res, name, price, image, tags)
     } else if (error.errorResponse.code === 11000) {
       setLocals(res, { title: CREATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
       res.render('create-product')
@@ -65,7 +66,7 @@ export const deleteProduct = async (req, res, next) => {
     }
     // after all checks finally delete the product
     await Product.deleteOne({ _id: productId })
-    console.log('SUCCESSFULLY DELETED PRODUCT: ' + productId)
+    console.log('SUCCESSFULLY DELETED PRODUCT: ' + product)
     res.redirect('/')
   } catch (error) {
     next(error)
@@ -86,6 +87,50 @@ export const getUpdateProduct = async (req, res, next) => {
   }
 }
 
-export const postUpdateProduct = () => {
-
+export const postUpdateProduct = async (req, res, next) => {
+  // get form data
+  const { name, price, image, tags } = req.body
+  // get productId from route params
+  const { id } = req.params
+  try {
+    // normalize tags to array if only one selected
+    const normalizedTags = typeof tags === 'string' ? [tags] : tags
+    // get userId from session
+    const userId = req.session.userId
+    // get the product info from the database
+    const product = await Product.findById(id)
+    // check if the product exists
+    if (!product) {
+      console.warn(`WARNING | product with id ${id} is not found`)
+      next(createError(404))
+      return
+    }
+    // check if the userId from the session is the owner of the product
+    if (userId !== product.owner.toString()) {
+      console.warn(`WARNING | user with id ${userId} is trying to update a product from other owner`)
+      next(createError(401))
+      return
+    }
+    // Validations with zod
+    productSchema.parse({ ...req.body, tags: normalizedTags })
+    // after all checks and the validation update the product in the MongoDB
+    const updatedProduct = await Product.findByIdAndUpdate(id, {
+      name,
+      price: parseFloat(price),
+      image,
+      tags,
+      owner: userId
+    }, { new: true, runValidators: true })
+    console.log('SUCCESSFULLY UPDATED PRODUCT: ' + updatedProduct)
+    res.redirect('/')
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      handleProductValidationError(UPDATE_PRODUCT_TITLE, error, res, name, price, image, tags)
+    } else if (error.errorResponse.code === 11000) {
+      setLocals(res, { title: UPDATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
+      res.render('create-product')
+    } else {
+      next(error)
+    }
+  }
 }
