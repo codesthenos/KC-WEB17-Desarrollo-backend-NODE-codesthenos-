@@ -9,16 +9,16 @@
           <% if (productsLength <= 0) { %>
             <h2>No products match the URL</h2>
           <% } %>
-          <% if (limit || name || tag) { %>
+          <% if (limit) { %>
             <a class="btn" href="/">Show All</a>
             <% if (skip > 0) { %>
               <a class="btn" href="<%= hrefPreviousPage %>">Previous page</a>
             <% } %>
-            <% if (+skip + +limit < productsLength) { %>
+            <% if (nextPage < productsLength) { %>
               <a class="btn" href="<%= hrefNextPage %>">Next page</a>
             <% } %>
           <% } else { %>
-            <a class="btn" href="/?skip=0&limit=3">Show 3 by 3</a>
+            <a class="btn" href="<%= hrefPaginate %>">Show 3 by 3</a>
           <% } %>
         </div>
         <ul>

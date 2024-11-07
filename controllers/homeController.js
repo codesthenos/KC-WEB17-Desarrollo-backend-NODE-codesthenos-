@@ -1,4 +1,4 @@
-import { APP_TITLE, normalizePriceFilter, normalizeURL } from '../lib/config.js'
+import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
 import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
@@ -13,6 +13,7 @@ const index = async (req, res, next) => {
   res.locals.hrefNextPage = ''
   res.locals.previousPage = 0
   res.locals.hrefPreviousPage = ''
+  res.locals.hrefPaginate = ''
   // behaviour is there is no user logged in
   if (!req.session.userId) {
     // header locals
@@ -30,13 +31,6 @@ const index = async (req, res, next) => {
     const owner = req.session.userId
     // get query params
     const { limit, skip, sort, name, price, tag } = req.query
-    // handle malicious client for pagination with the URL
-    if ((!limit && skip) || (limit && !skip)) {
-      const normalizedUrl = normalizeURL({ name, price, tag, sort })
-      if (!normalizedUrl) return res.redirect('/')
-      res.redirect(`/?${normalizedUrl}`)
-      return
-    }
     // init filters and option for the list of products
     const filters = {}
     const options = {}
@@ -61,7 +55,14 @@ const index = async (req, res, next) => {
       options.sort = sort
       res.locals.sort = sort
     }
-    // set locals for pagination
+    // PAGINATION behaviour if we got in url only one, skip or limit
+    if ((!limit && skip) || (limit && !skip)) {
+      const normalizedUrl = normalizeURL({ name, price, tag, sort })
+      if (!normalizedUrl) return res.redirect('/')
+      res.redirect(`/?${normalizedUrl}`)
+      return
+    }
+    // PAGINATION behaviour if we got in url skip and limit
     if (skip && limit) {
       const normalizedLimit = Math.abs(+limit)
       options.skip = skip
@@ -75,6 +76,8 @@ const index = async (req, res, next) => {
       res.locals.previousPage = +skip - normalizedLimit < 0 ? 0 : +skip - normalizedLimit
       res.locals.hrefPreviousPage = `/?${normalizeURL({ skip: res.locals.previousPage, limit: normalizedLimit, name, price, tag, sort })}`
     }
+    // PAGINATION locals.hrefPaginate if dont have either skip and limit
+    res.locals.hrefPaginate = `/?${normalizeURL({ skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE, name, price, tag, sort })}`
     // total products length stored in a local
     res.locals.productsLength = await Product.countDocuments(filters)
     // list of products stored in a local
