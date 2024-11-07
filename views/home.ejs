@@ -9,6 +9,15 @@
           <% if (productsLength <= 0) { %>
             <h2>No products match the URL</h2>
           <% } %>
+          <% if (tag) { %>
+            <h3>Tag: <%= tag %></h3>
+          <% } %>
+          <% if (name) { %>
+            <h3>Name: <%= name %></h3>
+          <% } %>
+          <% if (price) { %>
+            <h3>Price: <%= price %></h3>
+          <% } %>
           <% if (limit) { %>
             <a class="btn" href="/">Show All</a>
             <% if (skip > 0) { %>

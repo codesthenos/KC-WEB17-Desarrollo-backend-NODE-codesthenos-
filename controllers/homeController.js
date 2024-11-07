@@ -1,4 +1,4 @@
-import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
+import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizePriceLocal, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
 import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
@@ -7,6 +7,7 @@ const index = async (req, res, next) => {
   res.locals.skip = ''
   res.locals.limit = ''
   res.locals.name = ''
+  res.locals.price = ''
   res.locals.tag = ''
   res.locals.sort = ''
   res.locals.nextPage = 0
@@ -44,10 +45,11 @@ const index = async (req, res, next) => {
     // price
     if (price) {
       filters.price = normalizePriceFilter(price)
+      res.locals.price = normalizePriceLocal(price)
     }
     // tag TODO
     if (tag) {
-      filters.tag = tag
+      filters.tags = { $in: [tag] }
       res.locals.tag = tag
     }
     // sort TODO
