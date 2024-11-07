@@ -1,4 +1,4 @@
-import { APP_TITLE, normalizePriceFilter } from '../lib/config.js'
+import { APP_TITLE, normalizePriceFilter, normalizeURL } from '../lib/config.js'
 import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
@@ -7,72 +7,78 @@ const index = async (req, res, next) => {
   res.locals.skip = ''
   res.locals.limit = ''
   res.locals.name = ''
-  res.locals.price = ''
   res.locals.tag = ''
   res.locals.sort = ''
+  res.locals.nextPage = 0
+  res.locals.hrefNextPage = ''
+  res.locals.previousPage = 0
+  res.locals.hrefPreviousPage = ''
+  // behaviour is there is no user logged in
   if (!req.session.userId) {
+    // header locals
     res.locals.headerLinkHref = '/login'
     res.locals.headerLinkText = 'LOGIN'
     res.render('home')
     return
   }
+  // behaviour if there is a user logged in
   try {
+    // header locals
+    res.locals.headerLinkHref = '/logout'
+    res.locals.headerLinkText = 'LOGOUT'
     // get userID from session
     const owner = req.session.userId
-    // get { limit, skip } query params
+    // get query params
     const { limit, skip, sort, name, price, tag } = req.query
     // handle malicious client for pagination with the URL
     if ((!limit && skip) || (limit && !skip)) {
-      const redirectQuery = {}
-      if (name) redirectQuery.name = `name=${name}`
-      if (price) redirectQuery.price = `price=${price}`
-      if (tag) redirectQuery.tag = `tag=${tag}`
-      if (sort) redirectQuery.sort = `sort=${sort}`
-      if (Object.values(redirectQuery).length === 0) return res.redirect('/')
-
-      res.redirect(`/?${Object.values(redirectQuery).join('&')}`)
+      const normalizedUrl = normalizeURL({ name, price, tag, sort })
+      if (!normalizedUrl) return res.redirect('/')
+      res.redirect(`/?${normalizedUrl}`)
       return
     }
-    console.log(price)
-    // declare list filters and locals
+    // init filters and option for the list of products
     const filters = {}
+    const options = {}
+    // declare list filters, options and locals with validation
     filters.owner = owner
+    // name
     if (name) {
       filters.name = new RegExp(`^${name}`, 'i')
       res.locals.name = name
     }
+    // price
     if (price) {
-      const normalizedPrice = normalizePriceFilter(price)
-      filters.price = normalizedPrice
-      res.locals.price = normalizedPrice
+      filters.price = normalizePriceFilter(price)
     }
+    // tag TODO
     if (tag) {
       filters.tag = tag
       res.locals.tag = tag
     }
-    // declare list options and locals
-    const options = {}
-    if (skip) {
-      options.skip = skip
-      res.locals.skip = skip
-    }
-    if (limit) {
-      options.limit = limit
-      res.locals.limit = Math.abs(limit)
-    }
+    // sort TODO
     if (sort) {
       options.sort = sort
       res.locals.sort = sort
     }
-    // validacion de schema zod
-    // comprobaciones de todos los query params, que pasa si metemos a capon cosas raras
+    // set locals for pagination
+    if (skip && limit) {
+      const normalizedLimit = Math.abs(+limit)
+      options.skip = skip
+      options.limit = normalizedLimit
+      res.locals.skip = skip
+      res.locals.limit = normalizedLimit
 
+      res.locals.nextPage = +skip + normalizedLimit
+      res.locals.hrefNextPage = `/?${normalizeURL({ skip: res.locals.nextPage, limit: normalizedLimit, name, price, tag, sort })}`
+
+      res.locals.previousPage = +skip - normalizedLimit < 0 ? 0 : +skip - normalizedLimit
+      res.locals.hrefPreviousPage = `/?${normalizeURL({ skip: res.locals.previousPage, limit: normalizedLimit, name, price, tag, sort })}`
+    }
     // total products length stored in a local
     res.locals.productsLength = await Product.countDocuments(filters)
     // list of products stored in a local
     res.locals.products = await Product.list({ filters, options })
-    res.locals.headerLinkHref = '/logout'
-    res.locals.headerLinkText = 'LOGOUT'
 
     res.render('home')
   } catch (error) {
