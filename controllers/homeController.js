@@ -50,7 +50,7 @@ const index = async (req, res, next) => {
     // tag
     if (tag) {
       const normalizedTag = normalizeTag(tag)
-      filters.tags = { $in: [normalizedTag] }
+      filters.tags = normalizedTag
       res.locals.tag = normalizedTag
     }
     // sort
