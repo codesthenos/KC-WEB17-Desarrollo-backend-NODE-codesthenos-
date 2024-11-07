@@ -1,4 +1,4 @@
-import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizePriceLocal, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
+import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizePriceLocal, normalizeSortLocal, normalizeSortMongo, normalizeTag, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
 import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
@@ -47,15 +47,16 @@ const index = async (req, res, next) => {
       filters.price = normalizePriceFilter(price)
       res.locals.price = normalizePriceLocal(price)
     }
-    // tag TODO
+    // tag
     if (tag) {
-      filters.tags = { $in: [tag] }
-      res.locals.tag = tag
+      const normalizedTag = normalizeTag(tag)
+      filters.tags = { $in: [normalizedTag] }
+      res.locals.tag = normalizedTag
     }
-    // sort TODO
+    // sort
     if (sort) {
-      options.sort = sort
-      res.locals.sort = sort
+      options.sort = normalizeSortMongo(sort)
+      res.locals.sort = normalizeSortLocal(sort)
     }
     // PAGINATION behaviour if we got in url only one, skip or limit
     if ((!limit && skip) || (limit && !skip)) {

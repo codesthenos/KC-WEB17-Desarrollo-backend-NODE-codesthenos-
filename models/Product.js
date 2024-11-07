@@ -11,6 +11,8 @@ const productSchema = new Schema({
 // static method for listing products
 productSchema.statics.list = ({ filters = {}, options = {} }) => {
   return Product.find(filters)
+    // collation to make insensitive the sorting by name
+    .collation({ locale: 'en', strength: 2 })
     .sort(options.sort)
     .skip(options.skip)
     .limit(options.limit)
