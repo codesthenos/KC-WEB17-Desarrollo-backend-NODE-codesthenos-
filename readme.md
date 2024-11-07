@@ -397,6 +397,8 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ## TODO
 
+- ### INCLUIR COMO USAR LA APP GIT CLONE NPM RUN DEV ...
+
 - ### `incluir filtros, paginacion` schema de zod para controlar el input del query params explicar navegacion creada usando los query params, mucha logica en home.ejs que quiza no deberia estar ahi, pero al menos ya tengo una paginacion decente funcionando, aunque aun no he manejado errores
 
 - ### ejemplo de llamada final: TODO
