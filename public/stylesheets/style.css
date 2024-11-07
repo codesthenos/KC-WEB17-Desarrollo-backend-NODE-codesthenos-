@@ -66,10 +66,53 @@ body {
   max-width: 900px;
   margin: 0 auto;
   padding: 0 1rem;
-  .nav-pagination {
+  .nav {
     display: flex;
     align-items: center;
     justify-content: space-evenly;
+    +.sorting {
+      margin-top: 1rem;
+      .sort {
+        h3 {
+          margin: 2rem 0;
+          text-align: center;
+        }
+      }
+    }
+  }
+  .nav-filters {
+    h3 {
+      margin: 3rem 0;
+      text-align: center;
+    }
+    .nav-filter-forms {
+      display: flex;
+      justify-content: space-evenly;
+      .name-price-filters {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+      }
+      .tag-filters-form {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        .filter-tag-wrapper {
+          display: flex;
+          .two-tags-div {
+            .one-tag-div {
+              margin-top: .25rem;
+              label {
+                display: inline-block;
+                min-width: 55px;
+              }
+            }
+          }
+        }
+      }
+    }
   }
   ul {
     margin: 2rem 0;
@@ -103,4 +146,11 @@ body {
       }
     }
   }
+}
+button:hover {
+  cursor: pointer;
+}
+button {
+  border: unset;
+  font: 14px"Lucida Grande", Helvetica, Arial, sans-serif;
 }

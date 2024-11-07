@@ -5,7 +5,7 @@
     <%- include('header.ejs') %>
     <main class="main">
       <% if (session.userId) { %>
-        <div class="nav-pagination">
+        <div class="nav">
           <% if (productsLength <= 0) { %>
             <h2>No products match the URL</h2>
           <% } %>
@@ -33,11 +33,80 @@
             <a class="btn" href="<%= hrefPaginate %>">Show 3 by 3</a>
           <% } %>
         </div>
+        <div class="nav sorting">
+          <div class="sort">
+            <h3>SORTING NAME</h3>
+            <a class="btn" href="<%= 'hrefNameSortAtoZ' %>">Name A-Z</a>
+            <a class="btn" href="<%= 'hrefNameSortZtoA' %>">Name Z-A</a>
+            <a class="btn" href="<%= 'hrefNameUnsort' %>">Name unsort</a>
+          </div>
+          <div class="sort">
+            <h3>SORTING PRICE</h3>
+            <a class="btn" href="<%= 'hrefPriceSortASC' %>">Price ASC</a>
+            <a class="btn" href="<%= 'hrefPriceSortDES' %>">Price DES</a>
+            <a class="btn" href="<%= 'hrefPriceUnsort' %>">Price unsort</a>
+          </div>
+        </div>
+        <div class="nav-filters">
+          <h3>FILTERS</h3>
+          <div class="nav-filter-forms">
+            <form action="<%= 'URLqueryparamsNAME' %>" method="get">
+              <div class="name-price-filters">
+                <label for="name-filter">NAME</label>
+                <input id="name-filter" type="text" required />
+                <div class="filter-form-buttons">
+                  <button class="btn" type="submit">SET</button>
+                  <a class="btn" href="<%= 'hrefNameUnsetFilter' %>">UNSET</a>
+                </div>
+              </div>
+            </form>
+            <form action="<%= 'URLqueryparamsPRICE' %>" method="get">
+              <div class="name-price-filters">
+                <label for="price-filter">PRICE</label>
+                <input id="price-filter" type="range" required />
+                <div class="filter-form-buttons">
+                  <button class="btn" type="submit">SET</button>
+                  <a class="btn" href="<%= 'hrefPriceUnsetFilter' %>">UNSET</a>
+                </div>
+              </div>
+            </form>
+            <form class="tag-filters-form" action="<%= 'URLqueryparamsTAG' %>" method="get">
+              <div class="filter-tag-wrapper">
+                <div class="two-tags-div">
+                  <div class="one-tag-div">
+                    <label for="tag-filter-work">work</label>
+                    <input type="radio" id="tag-filter-work" name="tags" value="work" required />
+                  </div>
+                  <div class="one-tag-div">
+                    <label for="tag-filter-lifestyle">lifestyle</label>
+                    <input type="radio" id="tag-filter-lifestyle" name="tags"
+                    value="lifestyle" required />
+                  </div>
+                </div>                
+                <div class="two-tags-div">
+                  <div class="one-tag-div">
+                    <input type="radio" id="tag-filter-motor" name="tags" value="motor" required />
+                    <label for="tag-filter-motor">motor</label>
+                  </div>
+                  <div class="one-tag-div">
+                    <input type="radio" id="tag-filter-mobile" name="tags" value="mobile"
+                    required />
+                    <label for="tag-filter-mobile">mobile</label>
+                  </div>
+                </div>
+              </div>
+              <div class="filter-form-buttons">
+                <button class="btn" type="submit">SET</button>
+                <a class="btn" href="<%= 'hrefTagUnsetFilter' %>">UNSET</a>
+              </div>
+            </form>
+          </div>
+        </div>
         <ul>
           <% products.map((product, index) => { %>
           <li>
             <div>
-              <h2>Name: <%= product.name %></h2>
+              <h2><%= product.name %></h2>
               <p>Price: <%= product.price %> €</p>
               <% product.tags.map((tag, index) => { %>
               <p>Tag <%= index + 1 %>: <%= tag %></p>
