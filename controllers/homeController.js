@@ -96,7 +96,6 @@ const index = async (req, res, next) => {
         headerLinkHref: '/logout',
         headerLinkText: 'LOGOUT',
         ...req.query,
-        price: 'PRICE has to match <number>-<number> pattern, example: 50-200',
         hrefNameSortAtoZ: normalizeURL({ ...req.query, sort: 'name' }),
         hrefNameSortZtoA: normalizeURL({ ...req.query, sort: 'name-1' }),
         hrefPriceSortASC: normalizeURL({ ...req.query, sort: 'price' }),
@@ -110,9 +109,11 @@ const index = async (req, res, next) => {
         previousPage: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit),
         hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
         hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
-        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE })
+        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE }),
+        error: 'ERROR IN PRICE FILTER\n\nPRICE FILTER MUST MATCH ONE OF THE FOLLOWING PATTERNS\n    <number> | <number>- | -<number> | <number>-<number>'
       })
       res.render('home')
+      return
     }
     next(error)
   }

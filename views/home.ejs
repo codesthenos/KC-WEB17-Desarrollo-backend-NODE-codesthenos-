@@ -149,6 +149,9 @@
             </form>
           </div>
         </div>
+        <% if (error) { %>
+          <pre><%= error %></pre>
+        <% } %>
         <% if (productsLength <= 0 || skip > productsLength) { %>
           <h2 class="no-product">No products match the URL</h2>
         <% } %>
