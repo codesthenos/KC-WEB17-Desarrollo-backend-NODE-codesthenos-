@@ -345,77 +345,109 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 - ### Creacion, borrado y editado de productos
 
-  1. Creo los **middlewares** en **productsController.js** para manejar las rutas de _product_
+  1.  Creo los **middlewares** en **productsController.js** para manejar las rutas de _product_
 
-     1. En `getCreateProduct` defino las **locals** que necesito para renderizar **create-product.ejs**
+      1.  En `getCreateProduct` defino las **locals** que necesito para renderizar **create-product.ejs**
 
-     2. En `postNewProduct` en este orden
+      2.  En `postNewProduct` en este orden
 
-        1. Guardo en _variables_ los datos del _formulario_ usando el **req.body**
+          1. Guardo en _variables_ los datos del _formulario_ usando el **req.body**
 
-        2. Guardo la variable _userId_ usando el **req.session.userId**
+          2. Guardo la variable _userId_ usando el **req.session.userId**
 
-        3. Valido el `req.body` usando la funcion `parse` de [zod](https://www.npmjs.com/package/zod) en el `productSchema` que he creado usando _zod_ en **validatorSchemas.js**
+          3. Valido el `req.body` usando la funcion `parse` de [zod](https://www.npmjs.com/package/zod) en el `productSchema` que he creado usando _zod_ en **validatorSchemas.js**
 
-        ```js
-        productSchema.parse(req.body)
-        ```
+          ```js
+          productSchema.parse(req.body)
+          ```
 
-        4. Guardo en la variable _newProduct_ un `new Product` con los datos obtenidos en el paso `1.` y usando `await newProduct.save()` lo guardo en la **MongoDB**
+          4. Guardo en la variable _newProduct_ un `new Product` con los datos obtenidos en el paso `1.` y usando `await newProduct.save()` lo guardo en la **MongoDB**
 
-        5. Redireciono a `'/'`
+          5. Redireciono a `'/'`
 
-        6. Manejo errores provinientes de la _validacion_ con **zod** usando la funcion `handleProductValidationError` que he creado en **zodErrorHandlers.js**
+          6. Manejo errores provinientes de la _validacion_ con **zod** usando la funcion `handleProductValidationError` que he creado en **zodErrorHandlers.js**
 
-        ```js
-        if (error instanceof z.ZodError) {
-          handleProductValidationError(
-            CREATE_PRODUCT_TITLE,
-            error,
-            res,
-            name,
-            price,
-            image,
-            tags
-          )
-        }
-        ```
+          ```js
+          if (error instanceof z.ZodError) {
+            handleProductValidationError(
+              CREATE_PRODUCT_TITLE,
+              error,
+              res,
+              name,
+              price,
+              image,
+              tags
+            )
+          }
+          ```
 
-        7. Llamo a `next(error)` en caso de otro tipo de error
+          7. Llamo a `next(error)` en caso de otro tipo de error
 
-     3. En `deleteProduct` en este orden
+      3.  En `deleteProduct` en este orden
 
-        1. Guardo la variable _productId_ leyendo los parametros de ruta usando **req.params.id**
+          1. Guardo la variable _productId_ leyendo los parametros de ruta usando **req.params.id**
 
-        2. Guardo el _userId_ como en `postNewProduct`, leyendo la sesion **req.session.userId**
+          2. Guardo el _userId_ como en `postNewProduct`, leyendo la sesion **req.session.userId**
 
-        3. Busco con un _producto_ con el _productId_ en la **MongoBD** usando `await Product.findById(productId)`
+          3. Busco con un _producto_ con el _productId_ en la **MongoBD** usando `await Product.findById(productId)`
 
-        4. Si no existe un _producto_ en la **MongoDB** con ese \__id_ muestro un warn en consola, llamo a `next(createError(404))` [createError info](https://github.com/jshttp/http-errors) y salgo de la funcion
+          4. Si no existe un _producto_ en la **MongoDB** con ese \__id_ muestro un warn en consola, llamo a `next(createError(404))` [createError info](https://github.com/jshttp/http-errors) y salgo de la funcion
 
-        5. Si el _userId_ obetindo de la sesion en el paso `2.` no coincide con el `product.owner.toString()` quiere decir que el usuario que esta intentando borrar el producto, no es el dueño del producto, asi que lanzamos `next(createError(401))` y salgo de la funcion
+          5. Si el _userId_ obetindo de la sesion en el paso `2.` no coincide con el `product.owner.toString()` quiere decir que el usuario que esta intentando borrar el producto, no es el dueño del producto, asi que lanzamos `next(createError(401))` y salgo de la funcion
 
-        6. En caso contrario, elimino el _producto_ de la **MongoDB** usando `await Product.deleteOne({ _id: productId })`
+          6. En caso contrario, elimino el _producto_ de la **MongoDB** usando `await Product.deleteOne({ _id: productId })`
 
-        7. Redireciono a `'/'`
+          7. Redireciono a `'/'`
 
-        8. Llamo a `next(error)` en caso de cualquier otro error
+          8. Llamo a `next(error)` en caso de cualquier otro error
 
-     4. #### TODO En `updateProduct` TODO
+      4.  En `getUpdateProduct` en este orden
 
-  2. Creo las rutas relacionadas con _product_ en **app.js**, usando primero el _middleware_ **isLogged** para comprobar _autenticacion_ y seguido, los _middlewares_ creados
+          1. Leo de los parametros de ruta `req.params` el _id_ del producto y lo guardo en la varible `id`
 
-     ```js
-     app.get('/create-product', isLogged, getCreateProduct)
-     app.post('/create-product', isLogged, postNewProduct)
-     app.get('/delete-product/:id', isLogged, deleteProduct)
-     ```
+          2. Leo de la sesion `req.session.userId` el _id_ del usuario y lo guardo en la variable `userId`
 
-  3. Creo _vista_ **create-product.ejs** para crear producto, en todos los checkboxes para los **tags** uso el mismo `name="tag"` e incluyo `value=<tagName>` para poder acceder a los tags facilmente en el servidor
+          3. Busco el producto con el `id` y guardo su informacion en _variables_
 
-  4. Creo dos enlaces, `<a>` uno en el **header.ejs** que hace una peticion **GET** a `/create-product` y otro en **home.ejs** que hace una peticion **GET** a `/delete-product/<productId>` para eliminar producto
+             ```js
+             const { name, price, image, tags, owner } = await Product.findById(
+               id
+             )
+             ```
 
-  5. El boton `submit` de la vista **create-product.ejs** hace una peticion **POST** a `/create-product`
+          4. Compruebo si existe un producto en la _base de datos_, si no lanzo `next(createError(404))`
+
+          5. Compruebo si el `userId` y el `id` coinciden, si no lanzo `next(createError(401))`
+
+          6. Preparo las `res.locals` usando la funcion `setLocals` que he creado en **config.js** para que el formulario salga directamente con la info del producto
+
+          7. Renderizo **create-product.ejs** si no ha habido fallo y si no, llamo a `next(error)`
+
+      5.  En `postUpdateProduct` en este orden
+
+          1.
+
+          2.
+
+          3.
+
+          4.
+
+      #### TODO En `updateProduct` TODO
+
+  2.  Creo las rutas relacionadas con _product_ en **app.js**, usando primero el _middleware_ **isLogged** para comprobar _autenticacion_ y seguido, los _middlewares_ creados
+
+      ```js
+      app.get('/create-product', isLogged, getCreateProduct)
+      app.post('/create-product', isLogged, postNewProduct)
+      app.get('/delete-product/:id', isLogged, deleteProduct)
+      ```
+
+  3.  Creo _vista_ **create-product.ejs** para crear producto, en todos los checkboxes para los **tags** uso el mismo `name="tag"` e incluyo `value=<tagName>` para poder acceder a los tags facilmente en el servidor
+
+  4.  Creo dos enlaces, `<a>` uno en el **header.ejs** que hace una peticion **GET** a `/create-product` y otro en **home.ejs** que hace una peticion **GET** a `/delete-product/<productId>` para eliminar producto
+
+  5.  El boton `submit` de la vista **create-product.ejs** hace una peticion **POST** a `/create-product`
 
 ---
 
