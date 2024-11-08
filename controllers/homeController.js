@@ -1,34 +1,9 @@
-import { APP_TITLE, CURRENT_PAGE, normalizePriceFilter, normalizePriceLocal, normalizeSortLocal, normalizeSortMongo, normalizeTag, normalizeURL, PRODUCTS_PER_PAGE } from '../lib/config.js'
+import { APP_TITLE, CURRENT_PAGE, validateQueryPrice, normalizePriceMongo, validateQuerySort, normalizeSortMongo, validateQueryTag, normalizeURL, PRODUCTS_PER_PAGE, setLocals } from '../lib/config.js'
 import { Product } from '../models/Product.js'
 
 const index = async (req, res, next) => {
   // init locals
-  res.locals.title = APP_TITLE
-  res.locals.skip = ''
-  res.locals.limit = ''
-  res.locals.name = ''
-  res.locals.price = ''
-  res.locals.tag = ''
-  res.locals.sort = ''
-  // pagination nav locals
-  res.locals.nextPage = 0
-  res.locals.hrefNextPage = ''
-  res.locals.previousPage = 0
-  res.locals.hrefPreviousPage = ''
-  res.locals.hrefPaginate = ''
-  res.locals.hrefShowAll = ''
-  // sorting name nav locals
-  res.locals.hrefNameSortAtoZ = ''
-  res.locals.hrefNameSortZtoA = ''
-  // sorting price nav locals
-  res.locals.hrefPriceSortASC = ''
-  res.locals.hrefPriceSortDES = ''
-  // unsort nav local
-  res.locals.hrefUnsort = ''
-  // locals for UNSET filters
-  res.locals.hrefNameUnsetFilter = ''
-  res.locals.hrefPriceUnsetFilter = ''
-  res.locals.hrefTagUnsetFilter = ''
+  setLocals(res, { title: APP_TITLE })
   // behaviour is there is no user logged in
   if (!req.session.userId) {
     // header locals
@@ -47,10 +22,9 @@ const index = async (req, res, next) => {
     // get query params
     const { limit, skip, sort, name, price, tag } = req.query
     // init filters and option for the list of products
-    const filters = {}
+    const filters = { owner }
     const options = {}
     // declare list filters, options and locals with validation
-    filters.owner = owner
     // name
     if (name) {
       filters.name = new RegExp(`^${name}`, 'i')
@@ -58,32 +32,34 @@ const index = async (req, res, next) => {
     }
     // price
     if (price) {
-      filters.price = normalizePriceFilter(price)
-      res.locals.price = normalizePriceLocal(price)
+      res.locals.price = validateQueryPrice(price)
+      filters.price = normalizePriceMongo(price)
     }
     // tag
     if (tag) {
-      const normalizedTag = normalizeTag(tag)
+      const normalizedTag = validateQueryTag(tag)
       filters.tags = normalizedTag
       res.locals.tag = normalizedTag
     }
     // sort
     if (sort) {
+      res.locals.sort = validateQuerySort(sort)
       options.sort = normalizeSortMongo(sort)
-      res.locals.sort = normalizeSortLocal(sort)
     }
+    // Generating URLS
+    const currentParams = { skip, limit, name, price, tag, sort }
     // sorting nav locals if user logged
-    res.locals.hrefNameSortAtoZ = normalizeURL({ sort: 'name', skip, limit, name, price, tag })
-    res.locals.hrefNameSortZtoA = normalizeURL({ sort: 'name-1', skip, limit, name, price, tag })
+    res.locals.hrefNameSortAtoZ = normalizeURL({ ...currentParams, sort: 'name' })
+    res.locals.hrefNameSortZtoA = normalizeURL({ ...currentParams, sort: 'name-1' })
     // sorting price nav locals
-    res.locals.hrefPriceSortASC = normalizeURL({ sort: 'price', skip, limit, name, price, tag })
-    res.locals.hrefPriceSortDES = normalizeURL({ sort: 'price-1', skip, limit, name, price, tag })
+    res.locals.hrefPriceSortASC = normalizeURL({ ...currentParams, sort: 'price' })
+    res.locals.hrefPriceSortDES = normalizeURL({ ...currentParams, sort: 'price-1' })
     // unsort nav local
-    res.locals.hrefUnsort = normalizeURL({ sort: '', skip, limit, name, price, tag })
+    res.locals.hrefUnsort = normalizeURL({ ...currentParams, sort: '' })
     // locals for UNSET filters
-    res.locals.hrefNameUnsetFilter = normalizeURL({ name: '', skip, limit, price, tag, sort })
-    res.locals.hrefPriceUnsetFilter = normalizeURL({ price: '', skip, limit, name, tag, sort })
-    res.locals.hrefTagUnsetFilter = normalizeURL({ tag: '', skip, limit, name, price, sort })
+    res.locals.hrefNameUnsetFilter = normalizeURL({ ...currentParams, name: '' })
+    res.locals.hrefPriceUnsetFilter = normalizeURL({ ...currentParams, price: '' })
+    res.locals.hrefTagUnsetFilter = normalizeURL({ ...currentParams, tag: '' })
     // PAGINATION behaviour if we got in url only one, skip or limit
     if ((!limit && skip) || (limit && !skip)) {
       res.redirect(normalizeURL({ name, price, tag, sort }))
@@ -114,7 +90,30 @@ const index = async (req, res, next) => {
 
     res.render('home')
   } catch (error) {
-    // usar zod error handler
+    if (error.message === '400 BAD REQUEST | ERROR in URL: PRICE query param should match <number>-<number> pattern') {
+      setLocals(res, {
+        title: APP_TITLE,
+        headerLinkHref: '/logout',
+        headerLinkText: 'LOGOUT',
+        ...req.query,
+        price: 'PRICE has to match <number>-<number> pattern, example: 50-200',
+        hrefNameSortAtoZ: normalizeURL({ ...req.query, sort: 'name' }),
+        hrefNameSortZtoA: normalizeURL({ ...req.query, sort: 'name-1' }),
+        hrefPriceSortASC: normalizeURL({ ...req.query, sort: 'price' }),
+        hrefPriceSortDES: normalizeURL({ ...req.query, sort: 'price-1' }),
+        hrefUnsort: normalizeURL({ ...req.query, sort: '' }),
+        hrefNameUnsetFilter: normalizeURL({ ...req.query, name: '' }),
+        hrefPriceUnsetFilter: normalizeURL({ ...req.query, price: '' }),
+        hrefTagUnsetFilter: normalizeURL({ ...req.query, tag: '' }),
+        nextPage: +req.query.skip + Math.abs(+req.query.limit),
+        hrefNextPage: normalizeURL({ ...req.query, skip: +req.query.skip + Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        previousPage: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit),
+        hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
+        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE })
+      })
+      res.render('home')
+    }
     next(error)
   }
 }

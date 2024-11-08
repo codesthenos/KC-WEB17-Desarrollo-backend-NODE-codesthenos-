@@ -34,8 +34,8 @@
           <div class="sort">
             <h3>SORTING NAME</h3>
             <div style="margin-left: 1.25rem;">
-              <a class="btn <%= sort === 'Sort by name from A to Z' ? 'disabled' : '' %>" href="<%= hrefNameSortAtoZ %>">A-Z</a>
-              <a class="btn <%= sort === 'Sort by name from Z to A' ? 'disabled' : '' %>" href="<%= hrefNameSortZtoA %>">Z-A</a>
+              <a class="btn <%= sort === 'name' ? 'disabled' : '' %>" href="<%= hrefNameSortAtoZ %>">A-Z</a>
+              <a class="btn <%= sort === 'name-1' ? 'disabled' : '' %>" href="<%= hrefNameSortZtoA %>">Z-A</a>
             </div>
           </div>
           <div class="sort" style="margin-top: 3rem;">
@@ -44,30 +44,60 @@
           <div class="sort">
             <h3>SORTING PRICE</h3>
             <div style="margin-left: 1rem;">
-              <a class="btn <%= sort === 'Sort by price ascendent' ? 'disabled' : '' %>" href="<%= hrefPriceSortASC %>">ASC</a>
-              <a class="btn <%= sort === 'Sort by price descendent' ? 'disabled' : '' %>" href="<%= hrefPriceSortDES %>">DES</a>
+              <a class="btn <%= sort === 'price' ? 'disabled' : '' %>" href="<%= hrefPriceSortASC %>">ASC</a>
+              <a class="btn <%= sort === 'price-1' ? 'disabled' : '' %>" href="<%= hrefPriceSortDES %>">DES</a>
             </div>
           </div>
         </div>
         <div class="nav-filters">
           <h3>FILTERS</h3>
           <div class="nav-filter-forms">
-            <form action="<%= 'URLqueryparamsNAME' %>" method="get">
+            <form method="get">
               <div class="name-price-filters">
                 <label for="name-filter">NAME</label>
-                <input id="name-filter" type="text" required />
+                <% if (skip) { %>
+                  <input type="hidden" name="skip" value="<%= skip %>">
+                <% } %>
+                <% if (limit) { %>
+                  <input type="hidden" name="limit" value="<%= limit %>">
+                <% } %>
+                <input id="name-filter" type="text" name="name" value="<%= name ? name : '' %>" required />
+                <% if (price) { %>
+                  <input type="hidden" name="price" value="<%= price %>">
+                <% } %>
+                <% if (tag) { %>
+                  <input type="hidden" name="tag" value="<%= tag %>">
+                <% } %>
+                <% if (sort) { %>
+                  <input type="hidden" name="sort" value="<%= sort %>">
+                <% } %>
                 <div class="filter-form-buttons">
-                  <button class="btn <%= name ? 'disabled' : '' %>" type="submit">SET</button>
+                  <button class="btn" type="submit">SET</button>
                   <a class="btn <%= !name ? 'disabled' : '' %>" href="<%= hrefNameUnsetFilter %>">UNSET</a>
                 </div>
               </div>
             </form>
-            <form action="<%= 'URLqueryparamsPRICE' %>" method="get">
+            <form method="get">
               <div class="name-price-filters">
                 <label for="price-filter">PRICE</label>
-                <input id="price-filter" type="number" required />
+                <% if (skip) { %>
+                  <input type="hidden" name="skip" value="<%= skip %>">
+                <% } %>
+                <% if (limit) { %>
+                  <input type="hidden" name="limit" value="<%= limit %>">
+                <% } %>
+                <% if (name) { %>
+                  <input type="hidden" name="name" value="<%= name %>">
+                <% } %>
+                <input id="price-filter" type="text" name="price" value="<%= price ? price : '' %>" required />
+                <% if (tag) { %>
+                  <input type="hidden" name="tag" value="<%= tag %>">
+                <% } %>
+                <% if (sort) { %>
+                  <input type="hidden" name="sort" value="<%= sort %>">
+                <% } %>
                 <div class="filter-form-buttons">
-                  <button class="btn <%= price ? 'disabled' : '' %>" type="submit">SET</button>
+                  <button class="btn" type="submit">SET</button>
                   <a class="btn <%= !price ? 'disabled' : '' %>" href="<%= hrefPriceUnsetFilter %>">UNSET</a>
                 </div>
               </div>
@@ -98,7 +128,7 @@
                 </div>
               </div>
               <div class="filter-form-buttons">
-                <button class="btn <%= tag ? 'disabled' : '' %>" type="submit">SET</button>
+                <button class="btn" type="submit">SET</button>
                 <a class="btn <%= !tag ? 'disabled' : '' %>" href="<%= hrefTagUnsetFilter %>">UNSET</a>
               </div>
             </form>
