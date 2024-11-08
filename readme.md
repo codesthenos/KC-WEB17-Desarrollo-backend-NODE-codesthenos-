@@ -40,7 +40,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
    3.08 [Login y logout](#implementacion-del-login-y-logout)
 
-   3.09 [CRUD Productos](#creacion-y-borrado-de-productos-opcional-update-de-producto-todo)
+   3.09 [CRUD Productos](#creacion-borrado-y-editado-de-productos)
 
    3.10 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
 
@@ -297,7 +297,11 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
      2. Normalizo el _email_ `email.toLowerCase().trim()`
 
-     3. #### TODO VALIDACION DE LOS DATOS DEL FORMULARION CON ZOD
+     3. Valido el `req.body` usando la funcion `parse` de [zod](https://www.npmjs.com/package/zod) en el `loginSchema` que he creado usando _zod_ en **validatorSchemas.js**
+
+        ```js
+        loginSchema.parse(req.body)
+        ```
 
      4. Busco un usuario en la **MongoDB** con el _email_ recuperado
 
@@ -323,7 +327,15 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
         res.redirect('/')
         ```
 
-     9. Si ocurre algun otro error, llamo a `next(error)`
+     9. Manejo errores provinientes de la _validacion_ con **zod** usando la funcion `handleLoginValidationError` que he creado en **zodErrorHandlers.js**
+
+        ```js
+        if (error instanceof z.ZodError) {
+          handleLoginValidationError(title, error, res, req.body.email)
+        }
+        ```
+
+     10. Si ocurre algun otro error, llamo a `next(error)`
 
   3. Creo la vista **login.ejs**, _formulario_ sencillo que muestra un **error** si fallamos en el login, y tiene un link a la **home**, el boton `submit` hace una peticion **POST** a `/login`
 
@@ -331,7 +343,7 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
   5. En **header.ejs** el `href` del link que hay de forma condicional no lleva a _'/logout', '/login' o '/'_ dependiendo si estoy renderizando **home.ejs** o **login.ejs** y si hay o no _usuario logueado_
 
-- ### Creacion y borrado de productos OPCIONAL update de producto TODO
+- ### Creacion, borrado y editado de productos
 
   1. Creo los **middlewares** en **productsController.js** para manejar las rutas de _product_
 
@@ -343,13 +355,33 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
         2. Guardo la variable _userId_ usando el **req.session.userId**
 
-        3. #### TODO VALIDACION DE LOS DATOS DEL FORMULARION CON ZOD
+        3. Valido el `req.body` usando la funcion `parse` de [zod](https://www.npmjs.com/package/zod) en el `productSchema` que he creado usando _zod_ en **validatorSchemas.js**
+
+        ```js
+        productSchema.parse(req.body)
+        ```
 
         4. Guardo en la variable _newProduct_ un `new Product` con los datos obtenidos en el paso `1.` y usando `await newProduct.save()` lo guardo en la **MongoDB**
 
         5. Redireciono a `'/'`
 
-        6. Llamo a `next(error)` en caso de error
+        6. Manejo errores provinientes de la _validacion_ con **zod** usando la funcion `handleProductValidationError` que he creado en **zodErrorHandlers.js**
+
+        ```js
+        if (error instanceof z.ZodError) {
+          handleProductValidationError(
+            CREATE_PRODUCT_TITLE,
+            error,
+            res,
+            name,
+            price,
+            image,
+            tags
+          )
+        }
+        ```
+
+        7. Llamo a `next(error)` en caso de otro tipo de error
 
      3. En `deleteProduct` en este orden
 
