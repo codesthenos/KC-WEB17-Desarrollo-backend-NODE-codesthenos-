@@ -54,13 +54,13 @@
           <div class="nav-filter-forms">
             <form method="get">
               <div class="name-price-filters">
-                <label for="name-filter">NAME</label>
                 <% if (skip) { %>
                   <input type="hidden" name="skip" value="<%= skip %>">
                 <% } %>
                 <% if (limit) { %>
                   <input type="hidden" name="limit" value="<%= limit %>">
                 <% } %>
+                <label for="name-filter">NAME</label>
                 <input id="name-filter" type="text" name="name" value="<%= name ? name : '' %>" required />
                 <% if (price) { %>
                   <input type="hidden" name="price" value="<%= price %>">
@@ -79,7 +79,6 @@
             </form>
             <form method="get">
               <div class="name-price-filters">
-                <label for="price-filter">PRICE</label>
                 <% if (skip) { %>
                   <input type="hidden" name="skip" value="<%= skip %>">
                 <% } %>
@@ -89,6 +88,7 @@
                 <% if (name) { %>
                   <input type="hidden" name="name" value="<%= name %>">
                 <% } %>
+                <label for="price-filter">PRICE</label>
                 <input id="price-filter" type="text" name="price" value="<%= price ? price : '' %>" required />
                 <% if (tag) { %>
                   <input type="hidden" name="tag" value="<%= tag %>">
@@ -102,31 +102,46 @@
                 </div>
               </div>
             </form>
-            <form class="tag-filters-form" action="<%= 'URLqueryparamsTAG' %>" method="get">
+            <form class="tag-filters-form" method="get">
+              <% if (skip) { %>
+                <input type="hidden" name="skip" value="<%= skip %>">
+              <% } %>
+              <% if (limit) { %>
+                <input type="hidden" name="limit" value="<%= limit %>">
+              <% } %>
+              <% if (name) { %>
+                <input type="hidden" name="name" value="<%= name %>">
+              <% } %>
+              <% if (price) { %>
+                <input type="hidden" name="price" value="<%= price %>">
+              <% } %>
               <div class="filter-tag-wrapper">
                 <div class="two-tags-div">
                   <div class="one-tag-div">
                     <label for="tag-filter-work">work</label>
-                    <input type="radio" id="tag-filter-work" name="tags" value="work" required />
+                    <input type="radio" id="tag-filter-work" name="tag" value="work" required <%= tag === 'work' ? 'checked' : '' %> />
                   </div>
                   <div class="one-tag-div">
                     <label for="tag-filter-lifestyle">lifestyle</label>
-                    <input type="radio" id="tag-filter-lifestyle" name="tags"
-                    value="lifestyle" required />
+                    <input type="radio" id="tag-filter-lifestyle" name="tag"
+                    value="lifestyle" required <%= tag === 'lifestyle' ? 'checked' : '' %> />
                   </div>
                 </div>                
                 <div class="two-tags-div">
                   <div class="one-tag-div">
-                    <input type="radio" id="tag-filter-motor" name="tags" value="motor" required />
+                    <input type="radio" id="tag-filter-motor" name="tag" value="motor" required <%= tag === 'motor' ? 'checked' : '' %> />
                     <label for="tag-filter-motor">motor</label>
                   </div>
                   <div class="one-tag-div">
-                    <input type="radio" id="tag-filter-mobile" name="tags" value="mobile"
-                    required />
+                    <input type="radio" id="tag-filter-mobile" name="tag" value="mobile"
+                    required <%= tag === 'mobile' ? 'checked' : '' %> />
                     <label for="tag-filter-mobile">mobile</label>
                   </div>
                 </div>
               </div>
+              <% if (sort) { %>
+                <input type="hidden" name="sort" value="<%= sort %>">
+              <% } %>
               <div class="filter-form-buttons">
                 <button class="btn" type="submit">SET</button>
                 <a class="btn <%= !tag ? 'disabled' : '' %>" href="<%= hrefTagUnsetFilter %>">UNSET</a>
