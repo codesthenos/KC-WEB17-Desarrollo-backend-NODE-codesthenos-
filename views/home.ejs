@@ -6,9 +6,6 @@
     <main class="main">
       <% if (session.userId) { %>
         <div class="nav">
-          <% if (productsLength <= 0) { %>
-            <h2>No products match the URL</h2>
-          <% } %>
           <% if (tag) { %>
             <h3>Tag: <%= tag %></h3>
           <% } %>
@@ -22,7 +19,7 @@
             <h3>Sort by: <%= sort %></h3>
           <% } %>
           <% if (limit) { %>
-            <a class="btn" href="/">Show All</a>
+            <a class="btn" href="<%= hrefShowAll %>">Show All</a>
             <% if (skip > 0) { %>
               <a class="btn" href="<%= hrefPreviousPage %>">Previous page</a>
             <% } %>
@@ -36,15 +33,20 @@
         <div class="nav sorting">
           <div class="sort">
             <h3>SORTING NAME</h3>
-            <a class="btn" href="<%= 'hrefNameSortAtoZ' %>">Name A-Z</a>
-            <a class="btn" href="<%= 'hrefNameSortZtoA' %>">Name Z-A</a>
-            <a class="btn" href="<%= 'hrefNameUnsort' %>">Name unsort</a>
+            <div style="margin-left: 1.25rem;">
+              <a class="btn <%= sort === 'Sort by name from A to Z' ? 'disabled' : '' %>" href="<%= hrefNameSortAtoZ %>">A-Z</a>
+              <a class="btn <%= sort === 'Sort by name from Z to A' ? 'disabled' : '' %>" href="<%= hrefNameSortZtoA %>">Z-A</a>
+            </div>
+          </div>
+          <div class="sort" style="margin-top: 3rem;">
+            <a class="btn <%= !sort ? 'disabled' : '' %>" href="<%= hrefUnsort %>">UNSORT</a>
           </div>
           <div class="sort">
             <h3>SORTING PRICE</h3>
-            <a class="btn" href="<%= 'hrefPriceSortASC' %>">Price ASC</a>
-            <a class="btn" href="<%= 'hrefPriceSortDES' %>">Price DES</a>
-            <a class="btn" href="<%= 'hrefPriceUnsort' %>">Price unsort</a>
+            <div style="margin-left: 1rem;">
+              <a class="btn <%= sort === 'Sort by price ascendent' ? 'disabled' : '' %>" href="<%= hrefPriceSortASC %>">ASC</a>
+              <a class="btn <%= sort === 'Sort by price descendent' ? 'disabled' : '' %>" href="<%= hrefPriceSortDES %>">DES</a>
+            </div>
           </div>
         </div>
         <div class="nav-filters">
@@ -55,18 +57,18 @@
                 <label for="name-filter">NAME</label>
                 <input id="name-filter" type="text" required />
                 <div class="filter-form-buttons">
-                  <button class="btn" type="submit">SET</button>
-                  <a class="btn" href="<%= 'hrefNameUnsetFilter' %>">UNSET</a>
+                  <button class="btn <%= name ? 'disabled' : '' %>" type="submit">SET</button>
+                  <a class="btn <%= !name ? 'disabled' : '' %>" href="<%= hrefNameUnsetFilter %>">UNSET</a>
                 </div>
               </div>
             </form>
             <form action="<%= 'URLqueryparamsPRICE' %>" method="get">
               <div class="name-price-filters">
                 <label for="price-filter">PRICE</label>
-                <input id="price-filter" type="range" required />
+                <input id="price-filter" type="number" required />
                 <div class="filter-form-buttons">
-                  <button class="btn" type="submit">SET</button>
-                  <a class="btn" href="<%= 'hrefPriceUnsetFilter' %>">UNSET</a>
+                  <button class="btn <%= price ? 'disabled' : '' %>" type="submit">SET</button>
+                  <a class="btn <%= !price ? 'disabled' : '' %>" href="<%= hrefPriceUnsetFilter %>">UNSET</a>
                 </div>
               </div>
             </form>
@@ -96,12 +98,15 @@
                 </div>
               </div>
               <div class="filter-form-buttons">
-                <button class="btn" type="submit">SET</button>
-                <a class="btn" href="<%= 'hrefTagUnsetFilter' %>">UNSET</a>
+                <button class="btn <%= tag ? 'disabled' : '' %>" type="submit">SET</button>
+                <a class="btn <%= !tag ? 'disabled' : '' %>" href="<%= hrefTagUnsetFilter %>">UNSET</a>
               </div>
             </form>
           </div>
         </div>
+        <% if (productsLength <= 0 || skip > productsLength) { %>
+          <h2 class="no-product">No products match the URL</h2>
+        <% } %>
         <ul>
           <% products.map((product, index) => { %>
           <li>

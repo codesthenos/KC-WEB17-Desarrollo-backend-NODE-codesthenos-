@@ -66,6 +66,12 @@ body {
   max-width: 900px;
   margin: 0 auto;
   padding: 0 1rem;
+  .no-product {
+    text-align: center;
+    margin-top: 4rem;
+    font-size: 2rem;
+    color: #00B7FF;
+  }
   .nav {
     display: flex;
     align-items: center;
@@ -153,4 +159,9 @@ button:hover {
 button {
   border: unset;
   font: 14px"Lucida Grande", Helvetica, Arial, sans-serif;
+}
+.btn.disabled{
+  cursor: default;
+  pointer-events: none;
+  opacity: .7;
 }

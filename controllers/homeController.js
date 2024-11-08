@@ -10,11 +10,25 @@ const index = async (req, res, next) => {
   res.locals.price = ''
   res.locals.tag = ''
   res.locals.sort = ''
+  // pagination nav locals
   res.locals.nextPage = 0
   res.locals.hrefNextPage = ''
   res.locals.previousPage = 0
   res.locals.hrefPreviousPage = ''
   res.locals.hrefPaginate = ''
+  res.locals.hrefShowAll = ''
+  // sorting name nav locals
+  res.locals.hrefNameSortAtoZ = ''
+  res.locals.hrefNameSortZtoA = ''
+  // sorting price nav locals
+  res.locals.hrefPriceSortASC = ''
+  res.locals.hrefPriceSortDES = ''
+  // unsort nav local
+  res.locals.hrefUnsort = ''
+  // locals for UNSET filters
+  res.locals.hrefNameUnsetFilter = ''
+  res.locals.hrefPriceUnsetFilter = ''
+  res.locals.hrefTagUnsetFilter = ''
   // behaviour is there is no user logged in
   if (!req.session.userId) {
     // header locals
@@ -58,11 +72,21 @@ const index = async (req, res, next) => {
       options.sort = normalizeSortMongo(sort)
       res.locals.sort = normalizeSortLocal(sort)
     }
+    // sorting nav locals if user logged
+    res.locals.hrefNameSortAtoZ = normalizeURL({ sort: 'name', skip, limit, name, price, tag })
+    res.locals.hrefNameSortZtoA = normalizeURL({ sort: 'name-1', skip, limit, name, price, tag })
+    // sorting price nav locals
+    res.locals.hrefPriceSortASC = normalizeURL({ sort: 'price', skip, limit, name, price, tag })
+    res.locals.hrefPriceSortDES = normalizeURL({ sort: 'price-1', skip, limit, name, price, tag })
+    // unsort nav local
+    res.locals.hrefUnsort = normalizeURL({ sort: '', skip, limit, name, price, tag })
+    // locals for UNSET filters
+    res.locals.hrefNameUnsetFilter = normalizeURL({ name: '', skip, limit, price, tag, sort })
+    res.locals.hrefPriceUnsetFilter = normalizeURL({ price: '', skip, limit, name, tag, sort })
+    res.locals.hrefTagUnsetFilter = normalizeURL({ tag: '', skip, limit, name, price, sort })
     // PAGINATION behaviour if we got in url only one, skip or limit
     if ((!limit && skip) || (limit && !skip)) {
-      const normalizedUrl = normalizeURL({ name, price, tag, sort })
-      if (!normalizedUrl) return res.redirect('/')
-      res.redirect(`/?${normalizedUrl}`)
+      res.redirect(normalizeURL({ name, price, tag, sort }))
       return
     }
     // PAGINATION behaviour if we got in url skip and limit
@@ -72,15 +96,17 @@ const index = async (req, res, next) => {
       options.limit = normalizedLimit
       res.locals.skip = skip
       res.locals.limit = normalizedLimit
-
+      // next page button
       res.locals.nextPage = +skip + normalizedLimit
-      res.locals.hrefNextPage = `/?${normalizeURL({ skip: res.locals.nextPage, limit: normalizedLimit, name, price, tag, sort })}`
-
+      res.locals.hrefNextPage = normalizeURL({ skip: res.locals.nextPage, limit: normalizedLimit, name, price, tag, sort })
+      // previous page button
       res.locals.previousPage = +skip - normalizedLimit < 0 ? 0 : +skip - normalizedLimit
-      res.locals.hrefPreviousPage = `/?${normalizeURL({ skip: res.locals.previousPage, limit: normalizedLimit, name, price, tag, sort })}`
+      res.locals.hrefPreviousPage = normalizeURL({ skip: res.locals.previousPage, limit: normalizedLimit, name, price, tag, sort })
+      // show all button
+      res.locals.hrefShowAll = normalizeURL({ name, price, tag, sort })
     }
-    // PAGINATION locals.hrefPaginate if dont have either skip and limit
-    res.locals.hrefPaginate = `/?${normalizeURL({ skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE, name, price, tag, sort })}`
+    // 3 by 3 button     PAGINATION locals.hrefPaginate if dont have either skip and limit
+    res.locals.hrefPaginate = normalizeURL({ skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE, name, price, tag, sort })
     // total products length stored in a local
     res.locals.productsLength = await Product.countDocuments(filters)
     // list of products stored in a local
