@@ -128,7 +128,7 @@ const index = async (req, res, next) => {
         hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
         hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
         hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE }),
-        errorURL: 'ERROR IN PRICE FILTER\n\nPRICE FILTER MUST MATCH ONE OF THE FOLLOWING PATTERNS\n    <number> | <number>- | -<number> | <number>-<number>'
+        errorURL: 'IF YOU WANNA PLAY DIRECTLY WITH THE URL QUERY PARAMS\n\nprice MUST MATCH ONE OF THE FOLLOWING PATTERNS\n    <number> | <number>- | -<number> | <number>-<number>\n\nOR\n\npriceMin >= 1 | priceMax > 0 | priceExact > 0'
       })
       res.render('home')
       return
