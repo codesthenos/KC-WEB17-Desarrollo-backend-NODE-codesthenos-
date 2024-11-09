@@ -206,7 +206,7 @@
         <% if (error) { %>
           <pre style="color: rgb(255, 31, 31);"><%= error %></pre>
         <% } %>
-        <% if (productsLength <= 0 || skip > productsLength) { %>
+        <% if (productsLength <= 0 || skip >= productsLength) { %>
           <h2 class="no-product">No products match the URL</h2>
         <% } %>
         <ul>

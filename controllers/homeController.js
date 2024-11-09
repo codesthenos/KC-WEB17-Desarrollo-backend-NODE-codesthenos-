@@ -46,15 +46,17 @@ const index = async (req, res, next) => {
     // PAGINATION behaviour if we got in url skip and limit
     if (skip && limit) {
       const normalizedLimit = Math.abs(+limit)
-      options.skip = skip
+      const normalizedSkip = Math.abs(+skip)
+      if (isNaN(normalizedLimit) || isNaN(normalizedSkip)) return res.redirect(normalizeURL({ ...currentParams, skip: undefined, limit: undefined }))
+      options.skip = normalizedSkip
       options.limit = normalizedLimit
-      res.locals.skip = skip
+      res.locals.skip = normalizedSkip
       res.locals.limit = normalizedLimit
       // next page button
-      res.locals.nextPage = +skip + normalizedLimit
+      res.locals.nextPage = +normalizedSkip + normalizedLimit
       res.locals.hrefNextPage = normalizeURL({ ...currentParams, skip: res.locals.nextPage, limit: normalizedLimit })
       // previous page button
-      res.locals.previousPage = +skip - normalizedLimit < 0 ? 0 : +skip - normalizedLimit
+      res.locals.previousPage = +normalizedSkip - normalizedLimit < 0 ? 0 : +normalizedSkip - normalizedLimit
       res.locals.hrefPreviousPage = normalizeURL({ ...currentParams, skip: res.locals.previousPage, limit: normalizedLimit })
       // show all button
       res.locals.hrefShowAll = normalizeURL({ name, price, tag, sort, priceMin, priceMax, priceExact })
