@@ -7,16 +7,19 @@
       <% if (session.userId) { %>
         <div class="nav">
           <% if (tag) { %>
-            <h3>Tag: <%= tag %></h3>
+            <h3 style="color: #00B7FF;">Tag: <%= tag %></h3>
           <% } %>
           <% if (name) { %>
-            <h3>Name: <%= name %></h3>
+            <h3 style="color: #00B7FF;">Name: <%= name %></h3>
           <% } %>
-          <% if (price) { %>
-            <h3>Price: <%= price %></h3>
+          <% if (priceView) { %>
+            <h3 style="color: #00B7FF;">Price: <%= priceView %></h3>
           <% } %>
           <% if (sort) { %>
-            <h3>Sort by: <%= sort %></h3>
+            <h3 style="color: #00B7FF;">Sort by: <%= sort %></h3>
+          <% } %>
+          <% if (errorURL) { %>
+            <h3>URL ERROR: <pre style="color: rgb(255, 31, 31);"><%= errorURL %></pre></h3>
           <% } %>
           <% if (limit) { %>
             <a class="btn" href="<%= hrefShowAll %>">Show All</a>
@@ -65,6 +68,15 @@
                 <% if (price) { %>
                   <input type="hidden" name="price" value="<%= price %>">
                 <% } %>
+                <% if (priceMin) { %>
+                  <input type="hidden" name="priceMin" value="<%= priceMin %>">
+                <% } %>
+                <% if (priceMax) { %>
+                  <input type="hidden" name="priceMax" value="<%= priceMax %>">
+                <% } %>
+                <% if (priceExact) { %>
+                  <input type="hidden" name="priceExact" value="<%= priceExact %>">
+                <% } %>
                 <% if (tag) { %>
                   <input type="hidden" name="tag" value="<%= tag %>">
                 <% } %>
@@ -88,8 +100,16 @@
                 <% if (name) { %>
                   <input type="hidden" name="name" value="<%= name %>">
                 <% } %>
-                <label for="price-filter">PRICE</label>
-                <input id="price-filter" type="text" name="price" value="<%= price ? price : '' %>" required />
+                <div class="price-2-div">
+                  <div class="price-div">
+                    <label for="priceMin-filter">PRICE MIN</label>
+                    <input id="priceMin-filter" type="number" name="priceMin" value="<%= priceMin ? priceMin : '' %>" <%= priceExact ? 'disabled' : '' %>/>
+                  </div>
+                  <div class="price-div">
+                    <label for="priceMax-filter">PRICE MAX</label>
+                    <input id="priceMax-filter" type="number" name="priceMax" value="<%= priceMax ? priceMax : '' %>" <%= priceExact ? 'disabled' : '' %> />
+                  </div>
+                </div>
                 <% if (tag) { %>
                   <input type="hidden" name="tag" value="<%= tag %>">
                 <% } %>
@@ -97,8 +117,33 @@
                   <input type="hidden" name="sort" value="<%= sort %>">
                 <% } %>
                 <div class="filter-form-buttons">
-                  <button class="btn" type="submit">SET</button>
-                  <a class="btn <%= !price ? 'disabled' : '' %>" href="<%= hrefPriceUnsetFilter %>">UNSET</a>
+                  <button class="btn <%= priceExact ? 'disabled' : '' %>" type="submit">SET</button>
+                  <a class="btn <%= !priceMin && !priceMax ? 'disabled' : '' %>" href="<%= hrefPriceMinMaxUnsetFilter %>">UNSET</a>
+                </div>
+              </div>
+            </form>
+            <form method="get">
+              <div class="name-price-filters">
+                <% if (skip) { %>
+                  <input type="hidden" name="skip" value="<%= skip %>">
+                <% } %>
+                <% if (limit) { %>
+                  <input type="hidden" name="limit" value="<%= limit %>">
+                <% } %>
+                <% if (name) { %>
+                  <input type="hidden" name="name" value="<%= name %>">
+                <% } %>
+                <label for="priceExact-filter">PRICE EXACT</label>
+                <input id="priceExact-filter" type="number" name="priceExact" value="<%= priceExact ? priceExact : '' %>" required <%= priceMin || priceMax ? 'disabled' : '' %> />
+                <% if (tag) { %>
+                  <input type="hidden" name="tag" value="<%= tag %>">
+                <% } %>
+                <% if (sort) { %>
+                  <input type="hidden" name="sort" value="<%= sort %>">
+                <% } %>
+                <div class="filter-form-buttons">
+                  <button class="btn <%= priceMin || priceMax ? 'disabled' : '' %>" type="submit">SET</button>
+                  <a class="btn <%= !priceExact ? 'disabled' : '' %>" href="<%= hrefPriceExactUnsetFilter %>">UNSET</a>
                 </div>
               </div>
             </form>
@@ -114,6 +159,15 @@
               <% } %>
               <% if (price) { %>
                 <input type="hidden" name="price" value="<%= price %>">
+              <% } %>
+              <% if (priceMin) { %>
+                <input type="hidden" name="priceMin" value="<%= priceMin %>">
+              <% } %>
+              <% if (priceMax) { %>
+                <input type="hidden" name="priceMax" value="<%= priceMax %>">
+              <% } %>
+              <% if (priceExact) { %>
+                <input type="hidden" name="priceExact" value="<%= priceExact %>">
               <% } %>
               <div class="filter-tag-wrapper">
                 <div class="two-tags-div">
@@ -150,7 +204,7 @@
           </div>
         </div>
         <% if (error) { %>
-          <pre><%= error %></pre>
+          <pre style="color: rgb(255, 31, 31);"><%= error %></pre>
         <% } %>
         <% if (productsLength <= 0 || skip > productsLength) { %>
           <h2 class="no-product">No products match the URL</h2>
