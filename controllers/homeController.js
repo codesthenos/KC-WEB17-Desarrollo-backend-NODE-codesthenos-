@@ -159,6 +159,81 @@ const index = async (req, res, next) => {
       })
       res.render('home')
       return
+    } else if (error.message === '400 BAD REQUEST | ERROR in URL: SORT query param should match <motor|lifestyle|mobile|work> pattern') {
+      setLocals(res, {
+        title: APP_TITLE,
+        headerLinkHref: '/logout',
+        headerLinkText: 'LOGOUT',
+        ...req.query,
+        hrefNameSortAtoZ: normalizeURL({ ...req.query, sort: 'name' }),
+        hrefNameSortZtoA: normalizeURL({ ...req.query, sort: 'name-1' }),
+        hrefPriceSortASC: normalizeURL({ ...req.query, sort: 'price' }),
+        hrefPriceSortDES: normalizeURL({ ...req.query, sort: 'price-1' }),
+        hrefUnsort: normalizeURL({ ...req.query, sort: '' }),
+        hrefNameUnsetFilter: normalizeURL({ ...req.query, name: '' }),
+        hrefPriceMinMaxUnsetFilter: normalizeURL({ ...req.query, priceMin: '', priceMax: '' }),
+        hrefPriceExactUnsetFilter: normalizeURL({ ...req.query, priceExact: '' }),
+        hrefTagUnsetFilter: normalizeURL({ ...req.query, tag: '' }),
+        nextPage: +req.query.skip + Math.abs(+req.query.limit),
+        hrefNextPage: normalizeURL({ ...req.query, skip: +req.query.skip + Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        previousPage: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit),
+        hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
+        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE }),
+        errorURL: 'IF YOU WANNA PLAY DIRECTLY WITH THE URL QUERY PARAMS\ntag MUST MATCH ONE OF THE FOLLOWING PATTERNS\n  motor | lifestyle | mobile | work'
+      })
+      res.render('home')
+      return
+    } else if (error.message === '400 BAD REQUEST | ERROR in URL: SORT query param should match <name|name-1|price|price-1> pattern') {
+      setLocals(res, {
+        title: APP_TITLE,
+        headerLinkHref: '/logout',
+        headerLinkText: 'LOGOUT',
+        ...req.query,
+        hrefNameSortAtoZ: normalizeURL({ ...req.query, sort: 'name' }),
+        hrefNameSortZtoA: normalizeURL({ ...req.query, sort: 'name-1' }),
+        hrefPriceSortASC: normalizeURL({ ...req.query, sort: 'price' }),
+        hrefPriceSortDES: normalizeURL({ ...req.query, sort: 'price-1' }),
+        hrefUnsort: normalizeURL({ ...req.query, sort: '' }),
+        hrefNameUnsetFilter: normalizeURL({ ...req.query, name: '' }),
+        hrefPriceMinMaxUnsetFilter: normalizeURL({ ...req.query, priceMin: '', priceMax: '' }),
+        hrefPriceExactUnsetFilter: normalizeURL({ ...req.query, priceExact: '' }),
+        hrefTagUnsetFilter: normalizeURL({ ...req.query, tag: '' }),
+        nextPage: +req.query.skip + Math.abs(+req.query.limit),
+        hrefNextPage: normalizeURL({ ...req.query, skip: +req.query.skip + Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        previousPage: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit),
+        hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
+        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE }),
+        errorURL: 'IF YOU WANNA PLAY DIRECTLY WITH THE URL QUERY PARAMS\nsort MUST MATCH ONE OF THE FOLLOWING PATTERNS\n  name | name-1 | price | price-1'
+      })
+      res.render('home')
+      return
+    } else if (error.message === '400 BAD REQUEST | ERROR in URL: priceMin | priceMax | priceExact query params should be a number > 0') {
+      setLocals(res, {
+        title: APP_TITLE,
+        headerLinkHref: '/logout',
+        headerLinkText: 'LOGOUT',
+        ...req.query,
+        hrefNameSortAtoZ: normalizeURL({ ...req.query, sort: 'name' }),
+        hrefNameSortZtoA: normalizeURL({ ...req.query, sort: 'name-1' }),
+        hrefPriceSortASC: normalizeURL({ ...req.query, sort: 'price' }),
+        hrefPriceSortDES: normalizeURL({ ...req.query, sort: 'price-1' }),
+        hrefUnsort: normalizeURL({ ...req.query, sort: '' }),
+        hrefNameUnsetFilter: normalizeURL({ ...req.query, name: '' }),
+        hrefPriceMinMaxUnsetFilter: normalizeURL({ ...req.query, priceMin: '', priceMax: '' }),
+        hrefPriceExactUnsetFilter: normalizeURL({ ...req.query, priceExact: '' }),
+        hrefTagUnsetFilter: normalizeURL({ ...req.query, tag: '' }),
+        nextPage: +req.query.skip + Math.abs(+req.query.limit),
+        hrefNextPage: normalizeURL({ ...req.query, skip: +req.query.skip + Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        previousPage: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit),
+        hrefPreviousPage: normalizeURL({ ...req.query, skip: +req.query.skip - Math.abs(+req.query.limit) < 0 ? 0 : +req.query.skip - Math.abs(+req.query.limit), limit: Math.abs(+req.query.limit) }),
+        hrefShowAll: normalizeURL({ name: req.query.name, price: req.query.price, tag: req.query.tag, sort: req.query.sort }),
+        hrefPaginate: normalizeURL({ ...req.query, skip: CURRENT_PAGE, limit: PRODUCTS_PER_PAGE }),
+        errorURL: 'IF YOU WANNA PLAY DIRECTLY WITH THE URL QUERY PARAMS\n   priceMin | priceMax | priceExact must be a number > 0'
+      })
+      res.render('home')
+      return
     }
     next(error)
   }
