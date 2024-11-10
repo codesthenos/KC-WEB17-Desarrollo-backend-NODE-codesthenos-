@@ -4,11 +4,18 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ## Como usar app en tu ordenador
 
-1. git clone
+Necesitas tener isntalado en tu ordenador [GIT](https://git-scm.com/downloads), [NODE](https://nodejs.org/en/) y [MONGO](https://www.mongodb.com/try/download/community) el proyecto fue creado con la version **20.18** de NODE
 
-2. npm i
-3. npm run resetDB
-4. npm run dev / npm run debug
+1. Abre una consola de comando y navega hasta la carpeta donde quieras copiar el proyecto y escribe el comando `git clone https://github.com/codesthenos/KC-WEB17-Desarrollo-backend-NODE-codesthenos-.git` para copiar el proyecto
+
+2. En la consola de comandos, navega hasta la carpeta que se ha creado y escribe `npm i` para instalar las _dependendias_
+3. Para poder hacer el siguiente paso, necesitas crear una conexion en mongodb y para poder usar la app, una vez tengas creada la conexion, puede ser en localhost o con [atlasMongoDB](Cj0KCQiA0MG5BhD1ARIsAEcZtwTU0IB1Mt9RkItYd8ZtDOZPeo6dN4HKRJITd1jPQe4NcqvY0BZtmHEaAnLYEALw_wcB), en los archivos del proyecto, busca `/lib/connectDB.js` y donde pone **MONGO_URI** poner la `connection string` que has creado.
+
+   Ademas en el proyecto navega hasta `/lib/sessionManager.js` y donde pone **MONGO_URI** poner la `connection string` y donde pone **SESSION_SECRET** pon una cadena de texto cualquiera
+
+4. Ahora, estamos listos para, en la consola de comandos escribir `npm run resetDB` y poblar la base de datos que has creado con 2 usuarios con unos 50 productos cada uno, para poder usar esos usuarios para usar la app, puedes mirar su info en **resetDB.js** (tiene muchas lineas, pero porque los 100 prodcutos ocupan mucho), se encuentran facil usando control+f, si no, igualmente puedes registrar un usuario nuevo y usar la app
+5. Para ver la app, podemos usar `npm run dev` para arrancar la app en el **PORT** _4444_ sin la variable de entorno **DEBUG** o usar `npm run debug` para arracar en el **PORT** _5555_ y con la variable de entorno **DEBUG** para ver logs de errores y mensajes mas largos y detalladados de error en la app
+6. Una vez veas la app, los nombres de los botones hacen bastante intuitivo como usar las funcionalidades de la app
 
 ## Como funcionan los endpoints y los query params en home
 
