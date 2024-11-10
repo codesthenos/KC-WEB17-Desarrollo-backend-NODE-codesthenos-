@@ -82,7 +82,7 @@ const index = async (req, res, next) => {
       res.locals.sort = validateQuerySort(sort)
       options.sort = normalizeSortMongo(sort)
     }
-    // price If someone add the query param 'price' manually to the url, it will delete the priceMin/Max?exact if exists and use only price query param to filter
+    // price If someone add the query param 'price' manually to the url, it will delete the priceMin/Max/exact if exists and use only price query param to filter
     if (price && (priceMin || priceMax || priceExact)) {
       res.redirect(normalizeURL({ ...currentParams, priceMin: '', priceMax: '', priceExact: '' }))
       return

@@ -1,8 +1,8 @@
-import { z } from 'zod'
+// import { z } from 'zod'
+// import { loginSchema } from '../lib/validatorSchemas.js'
+// import { handleLoginValidationError } from '../lib/zodErrorHandlers.js'
 import { LOGIN_TITLE as title, setLocals } from '../lib/config.js'
-import { loginSchema } from '../lib/validatorSchemas.js'
 import { User } from '../models/User.js'
-import { handleLoginValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getLogin = async (req, res, next) => {
   if (req.session.userId) return res.redirect('/')
@@ -14,8 +14,8 @@ export const postLogin = async (req, res, next) => {
   try {
     // get form data
     const { email, password } = req.body
-    // validate request body
-    loginSchema.parse(req.body)
+    // validate request body AT the end i had chose to create a middleware instead doing it here
+    // loginSchema.parse(req.body)
     // normalize email
     const normalizedEmail = email.toLowerCase().trim()
     // search User with the email in the MongoDB
@@ -38,10 +38,13 @@ export const postLogin = async (req, res, next) => {
     req.session.email = user.email
     res.redirect('/')
   } catch (error) {
+    /*
     if (error instanceof z.ZodError) {
       handleLoginValidationError(title, error, res, req.body.email)
     } else {
       next(error)
     }
+    */
+    next(error)
   }
 }

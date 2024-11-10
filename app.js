@@ -11,6 +11,9 @@ import { getLogin, postLogin } from './controllers/loginController.js'
 import logoutController from './controllers/logoutController.js'
 import { getRegister, postRegister } from './controllers/registerController.js'
 import { deleteProduct, getCreateProduct, postCreateProduct, getUpdateProduct, postUpdateProduct } from './controllers/productsController.js'
+import { createProductValidatorMiddleware, loginSchema, updateProductValidatorMiddleware, validatorMiddleware } from './lib/validatorSchemas.js'
+import { LOGIN_TITLE, REGISTER_TITLE } from './lib/config.js'
+import { handleLoginValidationError } from './lib/zodErrorHandlers.js'
 
 const app = express()
 
@@ -41,22 +44,22 @@ app.get('/', homeController)
 /* Users */
 // login
 app.get('/login', getLogin)
-app.post('/login', postLogin)
+app.post('/login', validatorMiddleware({ title: LOGIN_TITLE, schema: loginSchema, errorHandler: handleLoginValidationError }), postLogin)
 // logout
 app.all('/logout', logoutController)
 // register
 app.get('/register', getRegister)
-app.post('/register', postRegister)
+app.post('/register', validatorMiddleware({ title: REGISTER_TITLE, schema: loginSchema, errorHandler: handleLoginValidationError }), postRegister)
 
 /* Products */
 // create
 app.get('/create-product', isLogged, getCreateProduct)
-app.post('/create-product', isLogged, postCreateProduct)
+app.post('/create-product', isLogged, createProductValidatorMiddleware, postCreateProduct)
 // delete
 app.get('/delete-product/:id', isLogged, deleteProduct)
 // update
 app.get('/update-product/:id', isLogged, getUpdateProduct)
-app.post('/update-product/:id', isLogged, postUpdateProduct)
+app.post('/update-product/:id', isLogged, updateProductValidatorMiddleware, postUpdateProduct)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

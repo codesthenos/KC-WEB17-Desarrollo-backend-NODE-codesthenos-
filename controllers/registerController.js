@@ -1,8 +1,8 @@
-import { z } from 'zod'
+// import { z } from 'zod'
+// import { loginSchema } from '../lib/validatorSchemas.js'
+// import { handleLoginValidationError } from '../lib/zodErrorHandlers.js'
 import { setLocals, REGISTER_TITLE as title } from '../lib/config.js'
-import { loginSchema } from '../lib/validatorSchemas.js'
 import { User } from '../models/User.js'
-import { handleLoginValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getRegister = (req, res) => {
   if (req.session.userId) return res.redirect('/')
@@ -15,7 +15,7 @@ export const postRegister = async (req, res, next) => {
     // get form data
     const { email, password } = req.body
     // validate for data
-    loginSchema.parse(req.body)
+    // loginSchema.parse(req.body)
     // normalize email
     const normalizedEmail = email.toLowerCase().trim()
     // check if there is a REGISTERED user in the MongoDB
@@ -37,10 +37,13 @@ export const postRegister = async (req, res, next) => {
     req.session.email = savedUser.email
     res.redirect('/')
   } catch (error) {
+    /*
     if (error instanceof z.ZodError) {
       handleLoginValidationError(title, error, res, req.body.email)
     } else {
       next(error)
     }
+    */
+    next(error)
   }
 }

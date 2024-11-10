@@ -1,9 +1,9 @@
+// import { z } from 'zod'
+// import { productSchema } from '../lib/validatorSchemas.js'
+// import { handleProductValidationError } from '../lib/zodErrorHandlers.js'
 import createError from 'http-errors'
-import { z } from 'zod'
 import { Product } from '../models/Product.js'
-import { productSchema } from '../lib/validatorSchemas.js'
 import { CREATE_PRODUCT_TITLE, setLocals, UPDATE_PRODUCT_TITLE } from '../lib/config.js'
-import { handleProductValidationError } from '../lib/zodErrorHandlers.js'
 
 export const getCreateProduct = (req, res, next) => {
   setLocals(res, { title: CREATE_PRODUCT_TITLE })
@@ -14,12 +14,12 @@ export const postCreateProduct = async (req, res, next) => {
   // get data from form
   const { name, price, image, tags } = req.body
   try {
-    // normalize tags to array if only one selected
-    const normalizedTags = typeof tags === 'string' ? [tags] : tags
     // get userId from session
     const userId = req.session.userId
-    // Validations with zod
-    productSchema.parse({ ...req.body, tags: normalizedTags })
+    // Validations with zod AL final lo hago con un middleware y no aqui
+    // normalize tags to array if only one selected
+    // const normalizedTags = typeof tags === 'string' ? [tags] : tags
+    // productSchema.parse({ ...req.body, tags: normalizedTags })
     // create and store a new Product
     const newProduct = new Product({
       name,
@@ -33,9 +33,9 @@ export const postCreateProduct = async (req, res, next) => {
     console.log('SUCCESSFULLY CREATED PRODUCT: ' + newProduct)
     res.redirect('/')
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    /* if (error instanceof z.ZodError) {
       handleProductValidationError(CREATE_PRODUCT_TITLE, error, res, name, price, image, tags)
-    } else if (error.errorResponse.code === 11000) {
+    } else */ if (error.errorResponse.code === 11000) {
       setLocals(res, { title: CREATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
       res.render('create-product')
     } else {
@@ -107,8 +107,6 @@ export const postUpdateProduct = async (req, res, next) => {
   // get productId from route params
   const { id } = req.params
   try {
-    // normalize tags to array if only one selected
-    const normalizedTags = typeof tags === 'string' ? [tags] : tags
     // get userId from session
     const userId = req.session.userId
     // get the product info from the database
@@ -126,7 +124,9 @@ export const postUpdateProduct = async (req, res, next) => {
       return
     }
     // Validations with zod
-    productSchema.parse({ ...req.body, tags: normalizedTags })
+    // normalize tags to array if only one selected
+    // const normalizedTags = typeof tags === 'string' ? [tags] : tags
+    // productSchema.parse({ ...req.body, tags: normalizedTags })
     // after all checks and the validation update the product in the MongoDB
     const updatedProduct = await Product.findByIdAndUpdate(id, {
       name,
@@ -138,9 +138,9 @@ export const postUpdateProduct = async (req, res, next) => {
     console.log('SUCCESSFULLY UPDATED PRODUCT: ' + updatedProduct)
     res.redirect('/')
   } catch (error) {
-    if (error instanceof z.ZodError) {
+    /* if (error instanceof z.ZodError) {
       handleProductValidationError(UPDATE_PRODUCT_TITLE, error, res, name, price, image, tags)
-    } else if (error.errorResponse.code === 11000) {
+    } else */ if (error.errorResponse.code === 11000) {
       setLocals(res, { title: UPDATE_PRODUCT_TITLE, productName: name, productPrice: price, productImage: image, productTags: tags, error: '    NAME cant be repeated' })
       res.render('create-product')
     } else {
