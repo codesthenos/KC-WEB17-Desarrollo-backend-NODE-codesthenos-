@@ -79,9 +79,11 @@ Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExac
 
    3.09 [CRUD Productos](#creacion-borrado-y-editado-de-productos)
 
-   3.10 [Filtros y paginacion](#opctional-incluir-filtros-paginacion-update-etc)
+   3.10 TODO [Zod schemas y middlewares](#zod-schemas-y-middlewares)
 
-   3.11 [Ejemplo llamada](#ejemplo-de-llamada-final)
+   3.11 TODO [Register](#register)
+
+   3.12 TODO [Filtros y paginacion](#filtros-y-paginacion)
 
 ## Scaffolding creado por defecto con [`npx express-generator . --view=ejs`](https://github.com/expressjs/generator)
 
@@ -498,14 +500,14 @@ Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExac
 
   5.  El boton `submit` de la vista **create-product.ejs** hace una peticion **POST** a `/create-product`
 
----
+### Zod schemas y middlewares
 
-## TODO
+TODO
 
-- ### USAR `zod` explico schemas y middlewares
+### Register
 
-- ### REGISTRO `CREAR REGISTERCONTROLLER`
+TODO
 
-- ### INCLUIR COMO USAR LA APP GIT CLONE NPM RUN DEV ...
+### Filtros y paginacion
 
-- ### `incluir filtros, paginacion` schema de zod para controlar el input del query params explicar navegacion creada usando los query params, mucha logica en home.ejs que quiza no deberia estar ahi, pero al menos ya tengo una paginacion decente funcionando, aunque aun no he manejado errores
+TODO
