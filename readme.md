@@ -502,7 +502,47 @@ Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExac
 
 ### Zod schemas y middlewares
 
-TODO
+En vez de usar la funcion _parse_ de _zod_ directamente en los controladores, creo en el archivo **validatorSchemas.js** la funcion de orden superior `validatorMiddleware = ({...}) => (req, res, next) => {}` en la que uso _parse_ y manejo el error con el _errorHandler_ que es una de las funciones de **zodErrorHandlers.js**, esta funcion me va a servir para crear los _middleware de validacion_ para las peticiones **POST** en `/login` y `/register`
+
+Tambien creo `validatorProductMiddleware = ({...}) => (req, res, next) => {}` en la que uso _parse_ y en el manejo de errores el _errorHandler_ recibe distintos atributos al _errorHandler_ `validatorMiddleware` esta esta pensada para crear los _middleware de validacion_ para las peticiones **POST** en `/create-product` y `/updateProduct/:id`
+
+Como es de las primeras veces que uso este tipo de funciones, para `/login` y `/register` la uso directamente en **app.js**
+de un modo parecido en ambas rutas
+
+```js
+app.post(
+  '/login',
+  validatorMiddleware({
+    title: LOGIN_TITLE,
+    schema: loginSchema,
+    errorHandler: handleLoginValidationError
+  }),
+  postLogin
+)
+```
+
+En el caso de las rutas `/create-product` y `/updateProduct/:id` opto por en **validatorSchemas.js** crear los middlewares especificos de ambas rutas, ambos muy parecidos
+
+```js
+export const createProductValidatorMiddleware = validatorProductMiddleware({
+  title: CREATE_PRODUCT_TITLE,
+  schema: productSchema,
+  errorHandler: handleProductValidationError
+})
+```
+
+Y en **app.js** usar estos middlewares directamente
+
+```js
+app.post(
+  '/create-product',
+  isLogged,
+  createProductValidatorMiddleware,
+  postCreateProduct
+)
+```
+
+Para dejar huella de como lo hacia al pricipio, he comentado en los controllers las partes de la validacion en vez de borrarlas
 
 ### Register
 
