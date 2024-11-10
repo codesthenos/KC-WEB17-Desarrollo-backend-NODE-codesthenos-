@@ -546,7 +546,84 @@ Para dejar huella de como lo hacia al pricipio, he comentado en los controllers 
 
 ### Register
 
-TODO
+1. Defino la rutas **GET** y **POST** _'/register'_ en **app.js**
+
+   ```js
+   app.get('/register', getRegister)
+   app.post(
+     '/register',
+     validatorMiddleware({
+       title: REGISTER_TITLE,
+       schema: loginSchema,
+       errorHandler: handleLoginValidationError
+     }),
+     postRegister
+   )
+   ```
+
+2. Creo `getRegister` y `postRegister` en **registerController.js**
+
+   1. En `getRegister` si hay usuario _logueado_ redirecciono a `'/'`, si no, hago set up de las _locals_ y renderizo `login-register.ejs`
+      ```js
+      export const getRegister = (req, res) => {
+        if (req.session.userId) return res.redirect('/')
+        setLocals(res, { title })
+        res.render('login-register')
+      }
+      ```
+   2. En `postRegister` en este orden
+
+      1. Recupero el _email_ y la _password_ del _req.body_
+
+         ```js
+         const { email, password } = req.body
+         ```
+
+      2. Normalizo el _email_
+
+         ```js
+         const normalizedEmail = email.toLowerCase().trim()
+         ```
+
+      3. Compruebo si hay ya un usuario en la _MongoDB_ con ese _email_ y si lo hay manejo el error
+
+         ```js
+         const user = await User.findOne({ email: normalizedEmail })
+         if (user) {
+           setLocals(res, {
+             title,
+             email,
+             error: '   ERROR: This email is already REGISTERED'
+           })
+           res.render('login-register')
+           return
+         }
+         ```
+
+      4. Creo el _user_ que voy a _insertar_ en la _MongoDB_, usando el metodo `userSchema.statics.hashPassword` para que en la base de datos la _password_ se guarde _encriptada_
+
+         ```js
+         const newUser = new User({
+           email: normalizedEmail,
+           password: await User.hashPassword(password)
+         })
+         ```
+
+      5. Guardo el nuevo usuario en la _MongoDB_
+
+         ```js
+         const savedUser = await newUser.save()
+         ```
+
+      6. Hago que al hacer el registro de usuario, se haga _login_ y redirecciono a `'/'`
+
+         ```js
+         req.session.userId = savedUser._id
+         req.session.email = savedUser.email
+         res.redirect('/')
+         ```
+
+      7. Manejo posibles errores no manejados llamando a `next(error)`
 
 ### Filtros y paginacion
 
