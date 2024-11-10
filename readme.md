@@ -79,9 +79,9 @@ Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExac
 
    3.09 [CRUD Productos](#creacion-borrado-y-editado-de-productos)
 
-   3.10 TODO [Zod schemas y middlewares](#zod-schemas-y-middlewares)
+   3.10 [Zod schemas y middlewares](#zod-schemas-y-middlewares)
 
-   3.11 TODO [Register](#register)
+   3.11 [Register](#register)
 
    3.12 TODO [Filtros y paginacion](#filtros-y-paginacion)
 
@@ -627,4 +627,103 @@ Para dejar huella de como lo hacia al pricipio, he comentado en los controllers 
 
 ### Filtros y paginacion
 
-TODO
+No voy a poder realizar una descripcion objetiva exacta de como he llegado al resultado final, ya que al principio hice la paginacion, y mientras hacia el sorting, me di cuenta de cosas que tenia que cambiar en la paginacion y lo mismo con los filtros, el caso es que ha ido evolucionando el codigo.
+
+#### homeController.js
+
+Si no hay usuario logueado, hace render de **home.ejs**, que si no tiene usuario es una pagina muy simple que usa pocas _locals_
+
+Si hay usuario loguado, en este orden
+
+1. Inicio las _locals_ del `href` del boton _Logout_ y del `children` (el texto del boton)
+
+2. Creo la variable `owner` con el valor del `req.session.userId`
+
+3. Creo las variables `skip, limit, sort, name, price, tag, priceMin, priceMax, priceExact` con los valores obtenidos de `req.query` (query params)
+
+4. Inicio la variable `const options = {}` que es el objeto que le voy a pasar a _mongoose_ para **paginar** y **ordenar**
+
+5. Inicio las _locals_ de los `href` de los botones que manejan la navegacion de **ordenar** (nombre y precio, ascendente y descendente), **desordenar** y **resetear** los _filtros_ (nombre, precioMin/precioMax, precioExact, tag), para ello uso la _funcion_ **normalizeURL** que he creado en **config.js**
+
+6. Para que no haya cosas raras en la paginacion, si en la _URL_, solo existen **skip** o **limit**, una de las dos de forma obligatoria (son los query params encargados de la paginacion), en el caso de que solo haya uno, redirecciono a una _URL_ que **elimina** ambos, devolviendo la misma _URL_ pero sin **skip** ni **limit**
+
+   ```js
+   if ((!limit && skip) || (limit && !skip)) {
+     res.redirect(
+       normalizeURL({ ...currentParams, skip: undefined, limit: undefined })
+     )
+     return
+   }
+   ```
+
+7. Si tengo **skip** y **limit** entonces hago los calculos necesarios para crear los `href` de los _botones_ que manejan la **paginacion** (nextPage, previousPage y showAll)
+
+8. Tanto si tengo **skip** y **limit** como si no, inicio la _locals_ del `href` del boton `show 2 by 2` que sirve para ver la lista paginada
+
+9. Inicio la variable `const filters = { owner }`
+
+10. Si tengo **name** meto en _filters.name_ `new RegExp()` e inicio la `res.locals.name = name`
+
+11. Si tengo **tag** meto en `normalizedTag` el resultado de usar `validateQueryTag(tag)` una _funcion_ que he creado en **config.js** que valida y normaliza el tag y en el caso de no seguir un patron `regexp` concreto lanza un error especifico
+
+12. Si no ha habido error, meto en _filters.tag_ `normalizedTag` e inicio `res.locals.tag = normalizedTag`
+
+13. Si tengo **sort** intento `res.locals.sort = validateQuerySort(sort)` que es una _funcion_ para validar _sort_ y lanzar un error especifico en el caso de no seguir un patron `regexp` concreto
+
+14. Si no ha sucedido error, meto en _options.sort_ `normalizeSortMongo(sort)` una _funcion_ para normalizar **sort** a una forma que `mongoose` entienda para poder ordenar
+
+15. Para el **price**, como he querido al principio no complicarme, use el _query param_ **price** que proponia Javier, uno que siguiese el patron numero-numero y cree toda la estructura para que funcionase el filtro con ese query param, pero luego a la hora de hacer las vistas, si quiero que el usuario tenga las opciones de usar el filtro que he creado (usar solo mayor que, o solo menor que, o ambos, o usar precio exacto) solo se me ocurria teniendo mas query params, asi que al final, ha quedado una estructura muy compleja, de forma innecesaria, pero que me ha ayudado a aprender un monton!! Por cierto Javier si has llegado hasta leer esto GRACIAS MIL GRACIAS
+
+16. La idea detras de lo que voy a explicar es que el usuario tiene forma a traves de un formulario de poder poner un precio minimo o maximo, o ambos, y a traves de otro poner un precio exacto, he intentado pensar en todos los detalles, desactivar un formulario si el otro esta en uso para que no entre en conflito, asi como el **price** solo se puede poner directamente en la url, pero si lo intentas poner cuando hay alguno de los otros activo, elimina los otros (relativos al precio) y usa el **price**, asi como si existe **price** en la url y quieres usar el formulario del precio exacto o del min/max, lo que hace es no deolver el **price** quedandose solo con el que haya enviado y los otros que hubiese que no sean del precio.
+
+17. Ademas de que he pensado en todos los casos de error que se me han ocurrido tanto en formularios como en los query params directamente en la url manejando todos de forma especifica para que te manden mensajes de error en un sitio u otro de la pantalla, o que eliminen query params.
+
+18. Haya vamos con la explicacion del codigo relativo a esto
+
+19. Primera comprobacion, si en los _query params_ tengo **price** y ademas tengo uno de los siguientes **priceMin**, **priceMax** o **priceExact**
+    ```js
+    res.redirect(
+      normalizeURL({
+        ...currentParams,
+        priceMin: '',
+        priceMax: '',
+        priceExact: ''
+      })
+    )
+    ```
+20. Siguiente, si tengo **price**, uso `validateQueryPrice(price)` una funcion creada en **config.js** que valida price usando una `regexp` que si no pasa lanza un error especifico, inicio las _res.locals.price_ y _res.locals.priceView_
+
+21. Meto en _filters.price_ `normalizePriceMongo(price)` una _funcion_ para normalizar **price** a una forma que `mongoose` entienda para poder _filtrar_
+
+22. Si no tengo **price** y tengo alguno de los siguientes **priceMin**, **priceMax** o **priceExact**, inicio las _res.locals.priceMin_, _res.locals.priceMax_ y _res.locals.priceExact_
+
+23. Creo `const validatedPrice = normalizedPrice({ priceMin, priceMax, priceExact })` usando la _funcion_ `normalizedPrice` que creo en **config.js** y que primero valida el unico error posible a traves del formulario que seria poner un valor negativo y lanza error especifico, luego valida si ha sido una entrada no numerica (solo se podria tocando en la url directamente) y lanza un error distinto al anterior, y si pasa las validaciones, devuelve una cadena de texto que mi funcion `normalizePriceMongo` entiende
+
+24. Si pasa la validacion, meto en _filters.price_ el resultado de llamar a `normalizePriceMongo(validatedPrice)` para crear el **filtro** que usa mi funcion de _mongoose_
+
+25. FINALMENTE (aparentemente) incio las _locals_ y renderizo **home.ejs**
+
+    ```js
+    res.locals.productsLength = await Product.countDocuments(filters)
+    res.locals.products = await Product.list({ filters, options })
+    res.render('home')
+    ```
+
+26. Manejo de errores, antes del ultimo refactor, esto eran 150 lineas de codigo LOL
+
+27. Justo despues del `catch(error)` uso la funcion `setLocals` creada en **config.js** para iniciar las _res.locals_ comunes en todos los errores (este fue el refactor)
+
+28. Inicio arbol de _if_ y _else if_ para manejar los distintos casos de error, y poder lanzar un mensaje o incluso colocar el mensaje en un sitio distinto, dependiendo del error identificado
+
+29. Como he ido validando y lanzando yo los errores con _mensajes_ especificos, puedo identificar los errores a traves del `error.message`, iniciar la _res.local.error_ o _res.local.errorURL_ y renderizar **home.ejs**
+
+    ```js
+    } else if (error.message === '400 BAD REQUEST | ERROR in URL: TAG query param should match <motor|lifestyle|mobile|work> pattern') {
+    res.locals.errorURL = 'IF YOU WANNA PLAY DIRECTLY WITH THE URL QUERY PARAMS\ntag MUST MATCH ONE OF THE FOLLOWING PATTERNS\n  motor | lifestyle | mobile | work'
+    res.render('home')
+    return
+    ```
+
+30. Para finalizar, las vistas son bastante simplonas, todo **handMade** usando _vanilla_ **HTML** y **CSS**, podria haber hecho mucho mejor las cosas de frontend, pero este no era el modulo para ello.
+
+MUCHAS GRACIAS POR LAS CLASES JAVIER
