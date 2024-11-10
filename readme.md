@@ -2,7 +2,37 @@
 
 La práctica consiste en _desarrollar_ un **website SSR** que permita **registro** y **login** de _usuarios_, y que un usuario logueado pueda **crear**, **borrar** y **ver** _productos_ que pone a la venta llamado **Nodepop**
 
-## Inidice
+## Como usar app en tu ordenador
+
+1. git clone
+
+2. npm i
+3. npm run resetDB
+4. npm run dev / npm run debug
+
+## Como funcionan los endpoints y los query params en home
+
+1. / homepage query params:
+
+   1. skip limit --> paginacion
+
+   2. sort --> orden
+   3. name --> filtrar por name
+   4. tag --> filtrar por tag
+   5. price --> filtrar por precio pattern (123-456) solo accesible por url
+   6. priceMin priceMax --> filtrar por precio minimo o maximo o ambos
+   7. priceExact --> filtrar por precio exacto
+
+Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExact=
+
+2. /login con formulario para loguearse
+3. /logout para desloguearse
+4. /register para registrarse que hace login automatico
+5. /create-product/:id con formulario para crear producto si estas logueado
+6. /delete-product/:id borra producto y redirecciona a la homepage / solo si estas logueado
+7. /update-product/:id con formulario relleno con los datos actuales del producto solo siestas logueado
+
+## Inidice de desarrollo
 
 1. [Scaffolding por defecto](#scaffolding-creado-por-defecto-con-npx-express-generator----viewejs)
 
@@ -425,15 +455,27 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
       5.  En `postUpdateProduct` en este orden
 
-          1.
+          1. Guardo en variables los datos del _body_ de la _request_ `req.body`
 
-          2.
+          2. Guardo en la variable _id_ el id del producto obetindo de los parametros de ruta `req.params`
 
-          3.
+          3. Guardo en la variable _userId_ el id del usuario logueado usando `req.session.userId`
 
-          4.
+          4. Guardo en la variable _producto_ el resultado de `await Product.findById(id)`
 
-      #### TODO En `updateProduct` TODO
+          5. Checkeo si el _producto_ existe, si no lanzo error `next(createError(404))`
+
+          6. Checkeo si el _id_ del usuario coincide con el _owner_ del producto, si no, lanzo error `next(createError(401))`
+
+          7. (Ahora, validaria con zod, igual que en login, register y createProduct, pero al final, para validar, he creado un _middleware_ y lo paso por la ruta despues del middleware de sesion y antes del controller)
+
+          8. Guardo en la variable _updatedProduct_ el resultado de `await Product.findByIdAndUpdate(id, <productData>)`
+
+          9. Redirecciono a la home si todo va bien
+
+          10. En caso de error, si el error es por duplicacion de _name_ renderizo otra vez **create-product.ejs** con las locals y un error
+
+          11. Si el error es cualquier otro, llamo uso `next(error)`
 
   2.  Creo las rutas relacionadas con _product_ en **app.js**, usando primero el _middleware_ **isLogged** para comprobar _autenticacion_ y seguido, los _middlewares_ creados
 
@@ -451,24 +493,12 @@ La práctica consiste en _desarrollar_ un **website SSR** que permita **registro
 
 ---
 
-# REVISAR LOS TODOS QUE TENGO EN MEDIO DEL README ANTES DE SEGUIR
+## TODO
 
-- ### USAR `zod` PARA VALIDAR EN `createProduct, updateProduct, loginUser, registerUser`
-
-- ### `update` etc TODO
+- ### USAR `zod` explico schemas y middlewares
 
 - ### REGISTRO `CREAR REGISTERCONTROLLER`
-
-## TODO
 
 - ### INCLUIR COMO USAR LA APP GIT CLONE NPM RUN DEV ...
 
 - ### `incluir filtros, paginacion` schema de zod para controlar el input del query params explicar navegacion creada usando los query params, mucha logica en home.ejs que quiza no deberia estar ahi, pero al menos ya tengo una paginacion decente funcionando, aunque aun no he manejado errores
-
-- ### ejemplo de llamada final: TODO
-
-  GET /?**tag**=_mobile_&**name**=_ip_&**price**=_50-_&**skip**=_0_&**limit**=_2_&**sort**=_price_
-
-## Paquetes NPM
-
-## Como usar app en tu ordenador
