@@ -83,7 +83,7 @@ Ejemplo --> /?skip=&limi=t&sort=&name=&tag=&price=&priceMin=&priceMax=&priceExac
 
    3.11 [Register](#register)
 
-   3.12 TODO [Filtros y paginacion](#filtros-y-paginacion)
+   3.12 [Filtros y paginacion](#filtros-y-paginacion)
 
 ## Scaffolding creado por defecto con [`npx express-generator . --view=ejs`](https://github.com/expressjs/generator)
 
